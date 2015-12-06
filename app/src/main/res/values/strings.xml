@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">文件传输</string>
+    <string name="tab_home">主页</string>
+    <string name="tab_folders">文件</string>
+    <string name="tab_friends">好友</string>
+    <string name="tab_settings">设置</string>
+    <string name="action_settings">Settings</string>
+</resources>
