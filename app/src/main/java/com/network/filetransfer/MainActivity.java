@@ -1,19 +1,24 @@
 package com.network.filetransfer;
 
 import java.util.ArrayList;
+
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+//import android.util.Log;
+// Example: Log.v("tag", "message");
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends Activity {
     final int Gray = 0xFF808080;
     final int Blue =0xFF80C8E9;
 
@@ -47,7 +52,7 @@ public class MainActivity extends FragmentActivity {
         if (getActionBar() != null) {
             getActionBar().hide();
         }
-        fragmentManager = getSupportFragmentManager();
+        fragmentManager = getFragmentManager();
         initViewPager();
         initViews();
         initState();
@@ -165,5 +170,27 @@ public class MainActivity extends FragmentActivity {
                 viewPager.setCurrentItem(3);
                 break;
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
