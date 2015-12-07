@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="aboutLibraries_description_name">文件传输</string>
+    <string name="aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion">false</string>
+    <string name="aboutLibraries_description_text">
+        <![CDATA[一款强大的文件传输应用。<br /><br /><b>You can fork me on <a href="https://github.com/TongtongLiu/FileTransfer">GitHub</a> </b>]]>
+    </string>
+</resources>
