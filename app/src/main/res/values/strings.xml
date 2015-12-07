@@ -5,4 +5,7 @@
     <string name="tab_friends">好友</string>
     <string name="tab_settings">设置</string>
     <string name="action_settings">设置</string>
+    <string name="settings_trasfer_rate_key">settings_trasfer_rate_key</string>
+    <string name="settings_checkbox_key">settings_checkbox_key</string>
+    <string name="settings_edittext_key">settings_edittext_key</string>
 </resources>

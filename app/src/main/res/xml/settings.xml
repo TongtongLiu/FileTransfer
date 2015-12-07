@@ -1,47 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Post">
-        <ListPreference android:title="Post Limit"
+    <PreferenceCategory android:title="系统">
+        <ListPreference android:title="传输速率"
+            android:key="@string/settings_trasfer_rate_key"
             android:defaultValue="10"
-            android:entryValues="@array/settings_entry_values_post_limit"
-            android:entries="@array/settings_entries_post_limit"/>
+            android:dialogTitle="速率选择"
+            android:entries="@array/settings_entries_transfer_rate"
+            android:entryValues="@array/settings_entry_values_transfer_rate"/>
 
-        <ListPreference android:title="Preview Image Quality"
-            android:defaultValue="0"
-            android:key="preview_image"
-            android:entryValues="@array/settings_entry_values_preview_image_size"
-            android:entries="@array/settings_entries_image_size"/>
-
-        <ListPreference android:title="Download Image Quality"
-            android:defaultValue="2"
-            android:key="download_image"
-            android:entryValues="@array/settings_entry_values_preview_image_size"
-            android:entries="@array/settings_entries_image_size"/>
-
-        <CheckBoxPreference android:title="Safe Mode"
+        <CheckBoxPreference android:title="Checkbox"
+            android:key="@string/settings_checkbox_key"
             android:defaultValue="true"
-            android:summaryOn="You are now under protected"
-            android:summaryOff="Warning! You may need be more careful!"/>
+            android:summaryOn="Checkbox开"
+            android:summaryOff="Checkbox关"/>
+
+        <EditTextPreference android:title="Edittext"
+            android:key="@string/settings_edittext_key"
+            android:defaultValue=""
+            android:summary="输入文本内容"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="About">
-        <PreferenceScreen android:title="Open Source"
+    <PreferenceCategory android:title="关于">
+        <PreferenceScreen android:title="关于应用"
             android:key="about">
         </PreferenceScreen>
 
-        <PreferenceScreen
-            android:title="Rate this app"
-            android:summary="Like the app?Please consider leaving a review in the Store!">
+        <PreferenceScreen android:title="应用评分"
+            android:summary="喜欢这个应用？在应用商店给我们评个分吧！">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="market://details?id=com.github.miao1007.kwallpaper"/>
+                android:data="market://details?id=com.network.filetransfer"/>
         </PreferenceScreen>
 
-        <PreferenceScreen android:title="Feedback"
-            android:summary="miao1007@gmail.com">
+        <PreferenceScreen android:title="意见反馈"
+            android:summary="有趣的想法和建议？欢迎发送给我们！">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="mailto:miao1007@gmail.com?subject=WallpaperAppFeedback"/>
+                android:data="mailto:liutongtong7@gmail.com?subject=FileTransfer App Feedback"/>
         </PreferenceScreen>
     </PreferenceCategory>
 </PreferenceScreen>
