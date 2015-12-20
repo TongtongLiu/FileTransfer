@@ -41,9 +41,9 @@ public class HomeFragment extends ListFragment {
 //        this.setListAdapter(adapter);
 //    }
 
-    public void onListItemClick(ListView parent, View view, int postion, long id) {
-        Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
-    }
+//    public void onListItemClick(ListView parent, View view, int postion, long id) {
+//        Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
+//    }
 
     private List<Map<String, Object>> getTransferList() {
         List<Map<String, Object>> list = new ArrayList<>();
