@@ -5,4 +5,8 @@
     <dimen name="action_bar_button_size">30dp</dimen>
     <dimen name="navigation_height">55dp</dimen>
     <dimen name="navigation_image_height">30dp</dimen>
+    <dimen name="fragment_padding">20dp</dimen>
+    <dimen name="listview_padding">10dp</dimen>
+    <dimen name="listview_image_size">40dp</dimen>
+    <dimen name="button_home_height">30dp</dimen>
 </resources>

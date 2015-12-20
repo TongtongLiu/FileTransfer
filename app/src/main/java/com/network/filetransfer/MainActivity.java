@@ -3,11 +3,12 @@ package com.network.filetransfer;
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +16,9 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-//import android.util.Log;
-// Example: Log.v("tag", "message");
 
 public class MainActivity extends Activity {
+    private static final String TAG = "MainActivity";
     final int Gray = 0xFF808080;
     final int Blue =0xFF80C8E9;
 
@@ -59,7 +59,7 @@ public class MainActivity extends Activity {
     }
 
     private void initViewPager() {
-        ArrayList<Fragment> fragmentsList = new ArrayList<Fragment>();
+        ArrayList<Fragment> fragmentsList = new ArrayList<>();
         fragmentsList.add(new HomeFragment());
         fragmentsList.add(new FoldersFragment());
         fragmentsList.add(new FriendsFragment());
@@ -94,15 +94,13 @@ public class MainActivity extends Activity {
     }
 
     //定义一个设置初始状态的方法
-    private void initState()
-    {
+    private void initState() {
         image_home.setImageResource(R.mipmap.ic_tabbar_home_selected);
         text_home.setTextColor(Blue);
         viewPager.setCurrentItem(0);
     }
 
-    public class MyOnClick implements OnClickListener
-    {
+    public class MyOnClick implements OnClickListener {
         @Override
         public void onClick(View view) {
             clearChioce();
@@ -110,14 +108,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    public class MyPageChangeListener implements OnPageChangeListener
-    {
-
+    public class MyPageChangeListener implements OnPageChangeListener {
         @Override
-        public void onPageScrollStateChanged(int arg0)
-        {
-            if(arg0 == 2)
-            {
+        public void onPageScrollStateChanged(int arg0) {
+            if(arg0 == 2) {
                 int i = viewPager.getCurrentItem();
                 clearChioce();
                 iconChange(i);
@@ -128,13 +122,12 @@ public class MainActivity extends Activity {
         public void onPageScrolled(int arg0, float arg1, int arg2) {}
 
         @Override
-        public void onPageSelected(int index){}
+        public void onPageSelected(int index) {}
 
     }
 
     //建立一个清空选中状态的方法
-    public void clearChioce()
-    {
+    public void clearChioce() {
         image_home.setImageResource(R.mipmap.ic_tabbar_home_unselected);
         text_home.setTextColor(Gray);
         image_folders.setImageResource(R.mipmap.ic_tabbar_folders_unselected);
@@ -146,8 +139,7 @@ public class MainActivity extends Activity {
     }
 
     //定义一个底部导航栏图标变化的方法
-    public void iconChange(int num)
-    {
+    public void iconChange(int num) {
         switch (num) {
             case R.id.layout_home:case 0:
                 image_home.setImageResource(R.mipmap.ic_tabbar_home_selected);

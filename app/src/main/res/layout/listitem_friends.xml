@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/listitem_friends"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/listview_padding" >
+
+    <ImageView
+        android:id="@+id/image_friends_icon"
+        android:layout_width="@dimen/listview_image_size"
+        android:layout_height="@dimen/listview_image_size"
+        android:layout_gravity="center"
+        android:maxHeight="@dimen/listview_image_size"
+        android:maxWidth="@dimen/listview_image_size"
+        android:scaleType="fitCenter" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/listview_padding"
+        android:paddingStart="@dimen/listview_padding"
+        android:paddingRight="@dimen/listview_padding"
+        android:paddingEnd="@dimen/listview_padding" >
+
+        <TextView
+            android:id="@+id/text_friends_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/text_friends_addr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" >
+        </TextView>
+
+    </LinearLayout>
+</LinearLayout>
