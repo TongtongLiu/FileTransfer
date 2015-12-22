@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(TAG, "OnCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // 隐藏原生ActionBar
@@ -184,5 +185,12 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        Log.v(TAG, "OnResume");
+        super.onResume();
+        fragmentPagerAdapter.getItem(viewPager.getCurrentItem()).setUserVisibleHint(true);
     }
 }

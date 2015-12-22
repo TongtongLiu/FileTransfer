@@ -14,4 +14,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:id="@+id/layout_home_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"  >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxHeight="@dimen/prompt_image_size"
+            android:maxWidth="@dimen/prompt_image_size"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_transfer"
+            android:layout_margin="@dimen/prompt_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_transfer_prompt"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@drawable/prompt_button_textcolor" />
+
+    </LinearLayout>
+
 </LinearLayout>

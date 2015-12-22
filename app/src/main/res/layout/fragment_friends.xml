@@ -14,4 +14,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <LinearLayout
+        android:id="@+id/layout_friends_disabled"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"  >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_connection_prompt"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:textColor="@drawable/prompt_button_textcolor" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:maxHeight="@dimen/prompt_image_size"
+            android:maxWidth="@dimen/prompt_image_size"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_connection"
+            android:layout_margin="@dimen/prompt_margin" />
+
+        <Button
+            android:id="@+id/button_wifi"
+            android:layout_width="@dimen/prompt_button_width"
+            android:layout_height="@dimen/prompt_button_height"
+            android:layout_marginTop="@dimen/prompt_margin"
+            android:background="@drawable/prompt_button"
+            android:text="@string/enable_wifi_prompt"
+            android:textSize="18sp"
+            android:textColor="@drawable/prompt_button_textcolor" />
+
+        <Button
+            android:id="@+id/button_bluetooth"
+            android:layout_width="@dimen/prompt_button_width"
+            android:layout_height="@dimen/prompt_button_height"
+            android:layout_marginTop="@dimen/prompt_margin"
+            android:background="@drawable/prompt_button"
+            android:text="@string/enable_bluetooth_prompt"
+            android:textSize="18sp"
+            android:textColor="@drawable/prompt_button_textcolor" />
+
+    </LinearLayout>
+
 </LinearLayout>
