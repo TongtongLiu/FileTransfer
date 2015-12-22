@@ -63,13 +63,18 @@ public class FoldersFragment extends ListFragment {
         else if (map.containsKey("file_title")) {
             String title = map.get("file_title").toString();
             String mDir = map.get("path").toString();
-            File f = new File(mDir);
-            if (f.isDirectory()) {
-                SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getAllFilesList(mDir), R.layout.listitem_all_files, files_from, files_to);
+            if (mDir == "") {
+                SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getFoldersList(), R.layout.listitem_folders, from, to);
                 this.setListAdapter(adapter);
             }
             else {
-                // send file
+                File f = new File(mDir);
+                if (f.isDirectory()) {
+                    SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getAllFilesList(mDir), R.layout.listitem_all_files, files_from, files_to);
+                    this.setListAdapter(adapter);
+                } else {
+                    // send file
+                }
             }
         }
 
@@ -99,7 +104,8 @@ public class FoldersFragment extends ListFragment {
     }
 
     private List<AllFilesInfo> getFiles(String type) {
-        return null;
+        List<AllFilesInfo> infoList = new ArrayList<>();
+        return infoList;
     }
 
     private List<Map<String, Object>> getAllFilesList(String mDir) {
@@ -113,6 +119,9 @@ public class FoldersFragment extends ListFragment {
 
         if (!mDir.equals("/sdcard")) {
             infoList.add(new AllFilesInfo("Back to ../", f.getParent(), R.mipmap.ic_phone));
+        }
+        else {
+            infoList.add(new AllFilesInfo("Back to ../", "", R.mipmap.ic_phone));
         }
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
