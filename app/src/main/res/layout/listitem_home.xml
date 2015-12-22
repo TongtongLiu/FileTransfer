@@ -81,7 +81,7 @@
             android:background="@drawable/button_home"
             android:text="Accept"
             android:textSize="15sp"
-            android:textColor="@drawable/button_home_textcolor" />
+            android:textColor="@drawable/button_textcolor" />
 
         <Button
             android:id="@+id/button_transfer_cancel"
@@ -91,7 +91,7 @@
             android:background="@drawable/button_home"
             android:text="Cancel"
             android:textSize="15sp"
-            android:textColor="@drawable/button_home_textcolor" />
+            android:textColor="@drawable/button_textcolor" />
     </LinearLayout>
 
 </LinearLayout>

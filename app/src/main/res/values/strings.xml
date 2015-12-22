@@ -8,4 +8,7 @@
     <string name="settings_trasfer_rate_key">settings_trasfer_rate_key</string>
     <string name="settings_checkbox_key">settings_checkbox_key</string>
     <string name="settings_edittext_key">settings_edittext_key</string>
+    <string name="no_connection_prompt">无WiFi和蓝牙连接</string>
+    <string name="enable_wifi_prompt">WiFi设置</string>
+    <string name="enable_bluetooth_prompt">蓝牙设置</string>
 </resources>

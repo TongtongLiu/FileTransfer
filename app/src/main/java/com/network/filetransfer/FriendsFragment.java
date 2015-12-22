@@ -10,6 +10,9 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.network.filetransfer.utils.BluetoothUtil;
+import com.network.filetransfer.utils.NetworkUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,26 +21,34 @@ import java.util.Map;
 public class FriendsFragment extends ListFragment {
     private static final String TAG = "FriendsFragments";
 
+    private NetworkUtil networkUtil;
+    private BluetoothUtil bluetoothUtil;
+
     final String[] from = new String[] {"name", "addr", "icon"};
     final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_friends, container, false);
-
-        SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getFriendsList(), R.layout.listitem_friends, from, to);
-        this.setListAdapter(adapter);
-
+        View view;
+        if (!networkUtil.isWiFiConnected() && !bluetoothUtil.isBluetoothEnabled()) {
+            view = inflater.inflate(R.layout.fragment_friends_disabled, container, false);
+        }
+        else {
+            view = inflater.inflate(R.layout.fragment_friends, container, false);
+            SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getFriendsList(), R.layout.listitem_friends, from, to);
+            this.setListAdapter(adapter);
+        }
         return view;
     }
 
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getSimpleData(), R.layout.listitem_friends, from, to);
-//        this.setListAdapter(adapter);
-//    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        networkUtil = new NetworkUtil(getActivity());
+        bluetoothUtil = new BluetoothUtil(getActivity());
+    }
 
     public void onListItemClick(ListView parent, View view, int postion, long id) {
         Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
