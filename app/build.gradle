@@ -26,4 +26,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:support-v13:23.1.1'
     compile 'com.mikepenz:aboutlibraries:5.3.3'
+    compile 'org.json:json:20151123'
+    compile 'com.baoyz.pullrefreshlayout:library:1.2.0'
 }

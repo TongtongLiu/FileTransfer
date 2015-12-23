@@ -1,11 +1,14 @@
 package com.network.filetransfer;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -16,6 +19,11 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.network.filetransfer.utils.BroadcastServer;
+import com.network.filetransfer.utils.TransferServer;
+
+import org.json.JSONObject;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -41,8 +49,8 @@ public class MainActivity extends Activity {
     private TextView text_friends;
     private TextView text_settings;
 
-    public MyOnClick myclick;
-    public MyPageChangeListener myPageChange;
+    private MyOnClick myclick;
+    private MyPageChangeListener myPageChange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,7 @@ public class MainActivity extends Activity {
         initViewPager();
         initViews();
         initState();
+        initServers();
     }
 
     private void initViewPager() {
@@ -99,6 +108,70 @@ public class MainActivity extends Activity {
         image_home.setImageResource(R.mipmap.ic_tabbar_home_selected);
         text_home.setTextColor(Blue);
         viewPager.setCurrentItem(0);
+    }
+
+    public static class MainHandler extends Handler {
+        public final static int broadcast = 0x1;
+
+        private final WeakReference<MainActivity> mActivity;
+        private MyFragmentPagerAdapter adapter;
+
+        public MainHandler(MainActivity activity, MyFragmentPagerAdapter adapter) {
+            mActivity = new WeakReference<>(activity);
+            this.adapter = adapter;
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            // TODO: handle message from server thread
+            Log.v(TAG, "" + message.what);
+            Log.v(TAG, message.obj.toString());
+            switch (message.what) {
+                case broadcast:
+                    FriendsFragment fragment = (FriendsFragment) adapter.getItem(2);
+                    fragment.addFriend((JSONObject) message.obj);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    class BServer implements Runnable {
+        private Handler handler;
+
+        public BServer(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void run() {
+            BroadcastServer broadcastServer = new BroadcastServer(handler);
+            broadcastServer.start();
+        }
+    }
+
+    class TServer implements Runnable {
+        private Handler handler;
+
+        public TServer(Handler handler) {
+            this.handler = handler;
+        }
+
+        @Override
+        public void run() {
+            TransferServer transferServer = new TransferServer(handler);
+            transferServer.start();
+        }
+    }
+
+    private void initServers() {
+        MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
+        Log.v(TAG, "BroadcastServer Start");
+        new Thread(new BServer(handler)).start();
+        Log.v(TAG, "TransferServer Start");
+        new Thread(new TServer(handler)).start();
     }
 
     public class MyOnClick implements OnClickListener {

@@ -2,14 +2,15 @@ package com.network.filetransfer;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
+
+import com.baoyz.widget.PullRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,14 +21,19 @@ import java.util.Map;
 public class HomeFragment extends ListFragment {
     private static final String TAG = "HomeFragments";
 
-    final String[] from = new String[] {"origin", "time", "name", "icon"};
-    final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_time,
-                                R.id.text_transfer_name, R.id.image_transfer_icon};
+    static final String[] from = new String[] {"origin", "time", "name", "icon"};
+    static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_time,
+                                       R.id.text_transfer_name, R.id.image_transfer_icon};
+    private List<Map<String, Object>> transferList;
+    private SimpleAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "OnCreate");
         super.onCreate(savedInstanceState);
+
+        transferList = new ArrayList<>();
+        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
     @Override
@@ -35,8 +41,9 @@ public class HomeFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container,false);
         Log.v(TAG, "OnCreateView");
-
-
+        if (getView() == null) {
+            initFragment(view);
+        }
         return view;
     }
 
@@ -53,15 +60,32 @@ public class HomeFragment extends ListFragment {
 
     private void initFragment(View view) {
         if (view != null) {
-            LinearLayout layout = (LinearLayout) view.findViewById(R.id.layout_home_disabled);
+            Log.v(TAG, "initFragment");
+            LinearLayout transferLayout = (LinearLayout) view.findViewById(R.id.layout_home_disabled);
+            final PullRefreshLayout listviewLayout = (PullRefreshLayout) view.findViewById(R.id.listview_home);
+            listviewLayout.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    Log.v(TAG, "onRefresh");
+                    listviewLayout.setRefreshing(true);
+                    (new Handler()).postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            listviewLayout.setRefreshing(false);
+                        }
+                    }, 3000);
+                }
+            });
+            listviewLayout.setRefreshStyle(PullRefreshLayout.STYLE_RING);
             if (anyTransfer()) {
-                layout.setVisibility(View.GONE);
-                SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getTransferList(), R.layout.listitem_home, from, to);
+                transferLayout.setVisibility(View.GONE);
                 this.setListAdapter(adapter);
+                listviewLayout.setVisibility(View.VISIBLE);
             }
             else {
-                layout.setVisibility(View.VISIBLE);
+                transferLayout.setVisibility(View.VISIBLE);
                 this.setListAdapter(null);
+                listviewLayout.setVisibility(View.GONE);
             }
         }
     }
@@ -110,31 +134,15 @@ class TransferInfo {
         setIcon(icon);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getName() {
-        return name;
-    }
+    public void setName(String name) { this.name = name; }
+    public String getName() { return name; }
 
-    public void setOrigin(String origin) {
-        this.origin = origin;
-    }
-    public String getOrigin() {
-        return origin;
-    }
+    public void setOrigin(String origin) { this.origin = origin; }
+    public String getOrigin() { return origin; }
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
-    public String getTime() {
-        return "Now";
-    }
+    public void setTime(Date time) { this.time = time; }
+    public String getTime() { return "Now"; }
 
-    public void setIcon(int icon) {
-        this.icon = icon;
-    }
-    public int getIcon() {
-        return icon;
-    }
+    public void setIcon(int icon) { this.icon = icon; }
+    public int getIcon() { return icon; }
 }
