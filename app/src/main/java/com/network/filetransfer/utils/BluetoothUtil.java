@@ -16,6 +16,6 @@ public class BluetoothUtil {
     }
 
     public boolean isBluetoothEnabled() {
-        return adapter.isEnabled();
+        return (adapter != null && adapter.isEnabled());
     }
 }
