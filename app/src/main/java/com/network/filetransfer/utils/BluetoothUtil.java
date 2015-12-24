@@ -119,7 +119,7 @@ public class BluetoothUtil {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    fileTransfer(socket);
+                    // fileTransfer(socket);
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -174,7 +174,7 @@ public class BluetoothUtil {
             }
 
             // Do work to manage the connection (in a separate thread)
-            fileTransfer(mmSocket);
+            Thread bluetoothSendFile = new BluetoothSendFile(mmSocket);
         }
 
         /** Will cancel an in-progress connection, and close the socket */
@@ -185,12 +185,12 @@ public class BluetoothUtil {
         }
     }
 
-    private class ConnectedThread extends Thread {
+    private class BluetoothSendFile extends Thread {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
 
-        public ConnectedThread(BluetoothSocket socket) {
+        public BluetoothSendFile(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -216,8 +216,7 @@ public class BluetoothUtil {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI activity
-                    mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    // mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
                     break;
                 }
