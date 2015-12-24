@@ -10,7 +10,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
-import android.widget.ArrayAdapter;
+import android.os.Handler;
+import android.os.Message;
+
+import com.network.filetransfer.MainActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,22 +30,22 @@ public class BluetoothUtil {
     private Context context;
     private BluetoothAdapter adapter;
     private BluetoothManager manager;
-    private ArrayAdapter<JSONObject> arrayAdapter;
+    private Handler handler;
 
     // Create a BroadcastReceiver for ACTION_FOUND
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            // When discovery finds a device
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                // Add the name and address to an array adapter to show in a ListView
                 try {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", device.getName());
                     jsonObject.put("addr", device.getAddress());
-                    jsonObject.put("type", "Bluetooth");
+                    Message message = new Message();
+                    message.what = MainActivity.MainHandler.bluetooth_search;
+                    message.obj = jsonObject;
+                    handler.sendMessage(message);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -50,11 +53,11 @@ public class BluetoothUtil {
         }
     };
 
-    public BluetoothUtil(Context context) {
+    public BluetoothUtil(Context context, Handler handler) {
         this.context = context;
+        this.handler = handler;
         adapter = BluetoothAdapter.getDefaultAdapter();
         manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-
     }
 
     public boolean isBluetoothEnabled() {
@@ -64,12 +67,11 @@ public class BluetoothUtil {
     public boolean isBluetoothSupported() {return (adapter != null); }
 
     public void searchBluetoothDevice() {
-        if (adapter.startDiscovery()) {
-
-        }
+        queryPairedDevice();
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        adapter.startDiscovery();
     }
 
     public void queryPairedDevice() {
@@ -83,7 +85,11 @@ public class BluetoothUtil {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", device.getName());
                     jsonObject.put("addr", device.getAddress());
-                    jsonObject.put("type", "Bluetooth");
+                    Message message = new Message();
+                    message.what = MainActivity.MainHandler.bluetooth_search;
+                    message.obj = jsonObject;
+                    handler.sendMessage(message);
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +97,9 @@ public class BluetoothUtil {
         }
     }
 
-    public ArrayAdapter<JSONObject> getArrayAdapter() {return arrayAdapter; }
+    public void destroy() {
+        context.unregisterReceiver(mReceiver);
+    }
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;

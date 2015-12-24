@@ -48,7 +48,7 @@ public class FriendsFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         networkUtil = new NetworkUtil(getActivity());
-        bluetoothUtil = new BluetoothUtil(getActivity());
+        bluetoothUtil = MainActivity.bluetoothUtil;
 
         friendList = new ArrayList<>();
         adapter = new SimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
@@ -163,10 +163,6 @@ public class FriendsFragment extends ListFragment {
         });
         // search bluetooth
         bluetoothUtil.searchBluetoothDevice();
-        ArrayAdapter<JSONObject> arrayAdapter = bluetoothUtil.getArrayAdapter();
-        for (int i = 0;i <arrayAdapter.getCount(); i++) {
-            addFriend(arrayAdapter.getItem(i));
-        }
     }
 
     private List<Map<String, Object>> getFriendList() {

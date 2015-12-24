@@ -20,9 +20,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastServer;
 import com.network.filetransfer.utils.TransferServer;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
@@ -52,6 +54,8 @@ public class MainActivity extends Activity {
     private MyOnClick myclick;
     private MyPageChangeListener myPageChange;
 
+    public static BluetoothUtil bluetoothUtil;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.v(TAG, "OnCreate");
@@ -66,6 +70,7 @@ public class MainActivity extends Activity {
         initViews();
         initState();
         initServers();
+        initBluetoothUtil();
     }
 
     private void initViewPager() {
@@ -112,6 +117,7 @@ public class MainActivity extends Activity {
 
     public static class MainHandler extends Handler {
         public final static int broadcast = 0x1;
+        public final static int bluetooth_search = 0x2;
 
         private final WeakReference<MainActivity> mActivity;
         private MyFragmentPagerAdapter adapter;
@@ -131,7 +137,16 @@ public class MainActivity extends Activity {
                     FriendsFragment fragment = (FriendsFragment) adapter.getItem(2);
                     fragment.addFriend((JSONObject) message.obj);
                     break;
-
+                case bluetooth_search:
+                    FriendsFragment b_fragment = (FriendsFragment) adapter.getItem(2);
+                    JSONObject jsonObject = (JSONObject) message.obj;
+                    try {
+                        jsonObject.put("type", "bluetooth");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    b_fragment.addFriend(jsonObject);
+                    break;
                 default:
                     break;
             }
@@ -172,6 +187,16 @@ public class MainActivity extends Activity {
         new Thread(new BServer(handler)).start();
         Log.v(TAG, "TransferServer Start");
         new Thread(new TServer(handler)).start();
+    }
+
+    private void initBluetoothUtil() {
+        MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
+        Log.v(TAG, "BlueToothUtil Init");
+        bluetoothUtil = new BluetoothUtil(this, handler);
+    }
+
+    private void destroyBluetoothUtil() {
+        bluetoothUtil.destroy();
     }
 
     public class MyOnClick implements OnClickListener {
@@ -265,5 +290,11 @@ public class MainActivity extends Activity {
         Log.v(TAG, "OnResume");
         super.onResume();
         fragmentPagerAdapter.getItem(viewPager.getCurrentItem()).setUserVisibleHint(true);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        destroyBluetoothUtil();
     }
 }
