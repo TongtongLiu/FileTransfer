@@ -113,6 +113,10 @@ public class BluetoothUtil {
         connectThread.start();
     }
 
+    public void sendFile(String MAC_addr, File f) {
+
+    }
+
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
 
