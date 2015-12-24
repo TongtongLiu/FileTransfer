@@ -71,7 +71,8 @@ public class BroadcastMessage {
             JSONObject json = new JSONObject();
             json.put("addr", getWiFiLocalIPAdress());
             json.put("name", getDeviceName());
-            json.put("type", "Phone");
+            json.put("icon", "Phone");
+            json.put("type", "WiFi");
             return json;
         } catch (JSONException e) {
             e.printStackTrace();

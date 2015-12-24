@@ -166,8 +166,8 @@ public class FriendsFragment extends ListFragment {
         Map<String, Object> map;
         List<FriendInfo> infoList = new ArrayList<>();
 
-        infoList.add(new FriendInfo("MacBook", "192.168.0.2", R.mipmap.ic_pc, "WiFi"));
-        infoList.add(new FriendInfo("iPhone", "192.168.0.3", R.mipmap.ic_phone, "WiFi"));
+        infoList.add(new FriendInfo("MacBook", "192.168.0.2", R.mipmap.ic_pc_wifi, "WiFi"));
+        infoList.add(new FriendInfo("iPhone", "192.168.0.3", R.mipmap.ic_phone_wifi, "WiFi"));
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
@@ -216,13 +216,32 @@ class FriendInfo {
             if (json.has("name")) { setName(json.getString("name")); }
             if (json.has("addr")) { setAddr(json.getString("addr")); }
             if (json.has("type")) {
-                if (json.getString("type").equals("Phone")) {
-                    setIcon(R.mipmap.ic_phone);
+                setType(json.getString("type"));
+            }
+            else {
+                setType("Phone");
+            }
+            if (json.has("icon")) {
+                String iconStr = json.getString("icon");
+                if (type.equals("WiFi")) {
+                    if (iconStr.equals("Phone")) {
+                        setIcon(R.mipmap.ic_phone_wifi);
+                    }
+                    else {
+                        setIcon(R.mipmap.ic_pc_wifi);
+                    }
                 }
                 else {
-                    setIcon(R.mipmap.ic_pc);
+                    if (iconStr.equals("Phone")) {
+                        setIcon(R.mipmap.ic_phone_bluetooth);
+                    }
+                    else {
+                        setIcon(R.mipmap.ic_pc_bluetooth);
+                    }
                 }
-                setType(json.getString("type"));
+            }
+            else {
+                setIcon(R.mipmap.ic_bluetooth);
             }
         } catch (JSONException e) {
             e.printStackTrace();

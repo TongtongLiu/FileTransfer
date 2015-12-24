@@ -28,7 +28,6 @@ public class BroadcastServerThread implements Runnable {
     }
 
     public void run() {
-        // TODO: Handle the broadcast message
         Log.v(TAG, "Receive A Broadcast Message");
         if (packet.getAddress().toString().substring(1).equals(new BroadcastMessage(context).getWiFiLocalIPAdress())) { return; }
 
