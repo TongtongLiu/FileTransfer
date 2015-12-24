@@ -15,6 +15,8 @@ import android.widget.ArrayAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -119,7 +121,8 @@ public class BluetoothUtil {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    // fileTransfer(socket);
+                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket);
+                    bluetoothReceiveFile.start();
                     try {
                         mmServerSocket.close();
                     } catch (IOException e) {
@@ -174,7 +177,9 @@ public class BluetoothUtil {
             }
 
             // Do work to manage the connection (in a separate thread)
-            Thread bluetoothSendFile = new BluetoothSendFile(mmSocket);
+            File file = new File("1.txt");
+            BluetoothSendFile bluetoothSendFile = new BluetoothSendFile(mmSocket, file);
+            bluetoothSendFile.start();
         }
 
         /** Will cancel an in-progress connection, and close the socket */
@@ -189,8 +194,80 @@ public class BluetoothUtil {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        private final File mmfile;
 
-        public BluetoothSendFile(BluetoothSocket socket) {
+        public BluetoothSendFile(BluetoothSocket socket, File file) {
+            mmSocket = socket;
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            // Get the input and output streams, using temp objects because
+            // member streams are final
+            try {
+                tmpIn = socket.getInputStream();
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) { }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+            mmfile = file;
+        }
+
+        public void run() {
+            byte[] fileBytes = new byte[1024];  // buffer store for the stream
+            try {
+                fileBytes = fullyReadFileToBytes(mmfile); // bytes returned from read()
+                write(fileBytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public byte[] fullyReadFileToBytes(File file) throws IOException {
+            int size = (int) file.length();
+            byte bytes[] = new byte[size];
+            byte tmpBuff[] = new byte[size];
+            FileInputStream fs = new FileInputStream(file);
+            try {
+                int read = fs.read(bytes, 0, size);
+                if (read < size) {
+                    int remain = size - read;
+                    while (remain > 0) {
+                        read = fs.read(tmpBuff, 0, remain);
+                        System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
+                        remain -= read;
+                    }
+                }
+            }  catch (IOException e){
+                throw e;
+            }
+            finally {
+                fs.close();
+            }
+            return bytes;
+        }
+
+        /* Call this from the main activity to send data to the remote device */
+        public void write(byte[] bytes) {
+            try {
+                mmOutStream.write(bytes);
+            } catch (IOException e) { }
+        }
+
+        /* Call this from the main activity to shutdown the connection */
+        public void cancel() {
+            try {
+                mmSocket.close();
+            } catch (IOException e) { }
+        }
+    }
+
+    private class BluetoothReceiveFile extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+
+        public BluetoothReceiveFile(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -215,19 +292,12 @@ public class BluetoothUtil {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-                    // Send the obtained bytes to the UI activity
-                    // mHandler.obtainMessage(MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+
                 } catch (IOException e) {
                     break;
                 }
             }
-        }
 
-        /* Call this from the main activity to send data to the remote device */
-        public void write(byte[] bytes) {
-            try {
-                mmOutStream.write(bytes);
-            } catch (IOException e) { }
         }
 
         /* Call this from the main activity to shutdown the connection */
