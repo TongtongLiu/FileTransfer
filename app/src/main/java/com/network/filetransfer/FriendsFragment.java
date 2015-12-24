@@ -3,7 +3,6 @@ package com.network.filetransfer;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -73,8 +72,11 @@ public class FriendsFragment extends ListFragment {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             Log.v(TAG, "OnResume");
-            initFragment(getView());
-            searchFriends();
+            View view = getView();
+            if (view != null) {
+                initFragment(view);
+                searchFriends();
+            }
         } else {
             // Log.v(TAG, "OnPause");
         }
@@ -130,10 +132,10 @@ public class FriendsFragment extends ListFragment {
             @Override
             public void run() {
                 Log.v(TAG, "BroadcastClient Start");
-                BroadcastClient client = new BroadcastClient();
+                BroadcastClient client = new BroadcastClient(getActivity());
                 client.send();
             }
-        });
+        }).start();
     }
 
     private List<Map<String, Object>> getFriendList() {
@@ -163,7 +165,10 @@ public class FriendsFragment extends ListFragment {
         map.put("name", info.getName());
         map.put("addr", info.getAddr());
         map.put("icon", info.getIcon());
-        friendList.add(map);
+        if (!friendList.contains(map)) {
+            Log.v(TAG, "A New User");
+            friendList.add(map);
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -183,9 +188,15 @@ class FriendInfo {
     public FriendInfo(JSONObject json) {
         try {
             if (json.has("name")) { setName(json.getString("name")); }
-            if (json.has("addr")) { setName(json.getString("addr")); }
-            // TODO: Judge pc or phone
-            setIcon(R.mipmap.ic_pc);
+            if (json.has("addr")) { setAddr(json.getString("addr")); }
+            if (json.has("type")) {
+                if (json.getString("type").equals("Phone")) {
+                    setIcon(R.mipmap.ic_phone);
+                }
+                else {
+                    setIcon(R.mipmap.ic_pc);
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

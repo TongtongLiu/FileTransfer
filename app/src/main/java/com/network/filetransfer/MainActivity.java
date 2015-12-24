@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -84,6 +85,7 @@ public class MainActivity extends Activity {
         viewPager = (ViewPager) findViewById(R.id.viewpager_content);
         viewPager.setAdapter(fragmentPagerAdapter);
         viewPager.setOnPageChangeListener(myPageChange);
+        viewPager.setOffscreenPageLimit(4);
 
         layout_home = (RelativeLayout) findViewById(R.id.layout_home);
         layout_folders = (RelativeLayout) findViewById(R.id.layout_folders);
@@ -139,29 +141,33 @@ public class MainActivity extends Activity {
     }
 
     class BServer implements Runnable {
+        private Context context;
         private Handler handler;
 
-        public BServer(Handler handler) {
+        public BServer(Context context, Handler handler) {
+            this.context = context;
             this.handler = handler;
         }
 
         @Override
         public void run() {
-            BroadcastServer broadcastServer = new BroadcastServer(handler);
+            BroadcastServer broadcastServer = new BroadcastServer(context, handler);
             broadcastServer.start();
         }
     }
 
     class TServer implements Runnable {
+        private Context context;
         private Handler handler;
 
-        public TServer(Handler handler) {
+        public TServer(Context context, Handler handler) {
+            this.context = context;
             this.handler = handler;
         }
 
         @Override
         public void run() {
-            TransferServer transferServer = new TransferServer(handler);
+            TransferServer transferServer = new TransferServer(context, handler);
             transferServer.start();
         }
     }
@@ -169,9 +175,9 @@ public class MainActivity extends Activity {
     private void initServers() {
         MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
         Log.v(TAG, "BroadcastServer Start");
-        new Thread(new BServer(handler)).start();
+        new Thread(new BServer(this, handler)).start();
         Log.v(TAG, "TransferServer Start");
-        new Thread(new TServer(handler)).start();
+        new Thread(new TServer(this, handler)).start();
     }
 
     public class MyOnClick implements OnClickListener {
