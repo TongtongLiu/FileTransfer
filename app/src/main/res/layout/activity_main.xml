@@ -20,27 +20,27 @@
             android:textColor="@color/foreground"
             android:textSize="18sp" />
 
-        <Button
-            android:id="@+id/button_add"
-            android:layout_width="@dimen/action_bar_button_size"
-            android:layout_height="@dimen/action_bar_button_size"
-            android:layout_marginRight="@dimen/action_bar_margin"
-            android:layout_marginEnd="@dimen/action_bar_margin"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/ap9" />
+        <!--<Button-->
+            <!--android:id="@+id/button_add"-->
+            <!--android:layout_width="@dimen/action_bar_button_size"-->
+            <!--android:layout_height="@dimen/action_bar_button_size"-->
+            <!--android:layout_marginRight="@dimen/action_bar_margin"-->
+            <!--android:layout_marginEnd="@dimen/action_bar_margin"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_alignParentEnd="true"-->
+            <!--android:background="@drawable/ap9" />-->
 
-        <Button
-            android:id="@+id/button_search"
-            android:layout_width="@dimen/action_bar_button_size"
-            android:layout_height="@dimen/action_bar_button_size"
-            android:layout_marginRight="@dimen/action_bar_margin"
-            android:layout_marginEnd="@dimen/action_bar_margin"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/button_add"
-            android:layout_toStartOf="@id/button_add"
-            android:background="@drawable/alt" />
+        <!--<Button-->
+            <!--android:id="@+id/button_search"-->
+            <!--android:layout_width="@dimen/action_bar_button_size"-->
+            <!--android:layout_height="@dimen/action_bar_button_size"-->
+            <!--android:layout_marginRight="@dimen/action_bar_margin"-->
+            <!--android:layout_marginEnd="@dimen/action_bar_margin"-->
+            <!--android:layout_centerVertical="true"-->
+            <!--android:layout_toLeftOf="@id/button_add"-->
+            <!--android:layout_toStartOf="@id/button_add"-->
+            <!--android:background="@drawable/alt" />-->
 
     </RelativeLayout>
 

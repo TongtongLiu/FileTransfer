@@ -12,4 +12,7 @@
     <string name="enable_wifi_prompt">WiFi设置</string>
     <string name="enable_bluetooth_prompt">蓝牙设置</string>
     <string name="no_transfer_prompt">无文件传输</string>
+    <string name="activity_folders">选择文件</string>
+    <string name="activity_friends">选择用户</string>
+    <string name="button_send">发送</string>
 </resources>

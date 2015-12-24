@@ -26,7 +26,6 @@ import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastServer;
 import com.network.filetransfer.utils.TransferServer;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
