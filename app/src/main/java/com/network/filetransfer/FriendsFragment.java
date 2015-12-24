@@ -163,13 +163,12 @@ public class FriendsFragment extends ListFragment {
                 client.send();
             }
         }).start();
-        });
         // search bluetooth
-        bluetoothUtil.searchBluetoothDevice();
-        ArrayAdapter<JSONObject> arrayAdapter = bluetoothUtil.getArrayAdapter();
-        for (int i = 0;i <arrayAdapter.getCount(); i++) {
-            addFriend(arrayAdapter.getItem(i));
-        }
+        //bluetoothUtil.searchBluetoothDevice();
+        //ArrayAdapter<JSONObject> arrayAdapter = bluetoothUtil.getArrayAdapter();
+        //for (int i = 0;i <arrayAdapter.getCount(); i++) {
+        //    addFriend(arrayAdapter.getItem(i));
+        //}
     }
 
     private List<Map<String, Object>> getFriendList() {
@@ -247,6 +246,6 @@ class FriendInfo {
     public void setIcon(int icon) { this.icon = icon; }
     public int getIcon() { return icon; }
 
-    public void setType(String type) {this.type = type; }
+    public void setType(String type) { this.type = type; }
     public String getType() {return type; }
 }
