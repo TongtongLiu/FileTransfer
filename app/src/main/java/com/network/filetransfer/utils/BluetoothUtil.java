@@ -107,14 +107,10 @@ public class BluetoothUtil {
         acceptThread.start();
     }
 
-    public void connectToServer(String MAC_addr) {
+    public void sendFile(String MAC_addr, File f) {
         BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
         ConnectThread connectThread = new ConnectThread(device);
         connectThread.start();
-    }
-
-    public void sendFile(String MAC_addr, File f) {
-
     }
 
     private class AcceptThread extends Thread {
