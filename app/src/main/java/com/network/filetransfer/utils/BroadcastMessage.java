@@ -1,11 +1,21 @@
 package com.network.filetransfer.utils;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.InetAddress;
 
 public class BroadcastMessage {
+    private Context context;
+
+    public BroadcastMessage(Context context) {
+        this.context = context;
+    }
+
     public static String getLocalHostIP() {
         String ip;
         try {
@@ -32,11 +42,33 @@ public class BroadcastMessage {
         return hostName;
     }
 
-    public static JSONObject getLocalInfo() {
+    public String getWiFiLocalIPAdress() {
+        WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            wifiManager.setWifiEnabled(true);
+        }
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo.getIpAddress();
+        return formatIpAddress(ipAddress);
+    }
+
+    private static String formatIpAddress(int ipAddress) {
+        return (ipAddress & 0xFF ) + "." +
+                ((ipAddress >> 8 ) & 0xFF) + "." +
+                ((ipAddress >> 16 ) & 0xFF) + "." +
+                ( ipAddress >> 24 & 0xFF) ;
+    }
+
+    public static String getDeviceName() {
+        return android.os.Build.MODEL;
+    }
+
+    public JSONObject getLocalInfo() {
         try {
             JSONObject json = new JSONObject();
-            json.put("addr", getLocalHostIP());
-            json.put("name", getLocalHostName());
+            json.put("addr", getWiFiLocalIPAdress());
+            json.put("name", getDeviceName());
+            json.put("type", "Phone");
             return json;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -44,7 +76,7 @@ public class BroadcastMessage {
         }
     }
 
-    public static String getLocalInfoString() {
+    public String getLocalInfoString() {
         JSONObject json = getLocalInfo();
         if (json != null) {
             return json.toString();

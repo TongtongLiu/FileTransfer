@@ -1,5 +1,6 @@
 package com.network.filetransfer.utils;
 
+import android.content.Context;
 import android.os.Handler;
 
 import java.io.IOException;
@@ -8,11 +9,13 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class TransferServer {
-    static final int PORT = 7776;
+    static final int PORT = 7775;
     public static ArrayList<Socket> socketList = new ArrayList<>();
+    private Context context;
     private Handler handler;
 
-    public TransferServer(Handler handler) {
+    public TransferServer(Context context, Handler handler) {
+        this.context = context;
         this.handler = handler;
     }
 
