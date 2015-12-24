@@ -1,6 +1,7 @@
 package com.network.filetransfer;
 
 import android.app.ListFragment;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,6 +39,7 @@ public class FriendsFragment extends ListFragment {
     static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon};
     private List<Map<String, Object>> friendList;
     private SimpleAdapter adapter;
+    private int REQUEST_ENABLE_BT = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,19 @@ public class FriendsFragment extends ListFragment {
 
     public void onListItemClick(ListView parent, View view, int postion, long id) {
         Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
+        ListView listView = (ListView)parent;
+        HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
+        // TODO: if bluetooth friend, pair each other first.
+        if (map.containsKey("type")) {
+            String type = map.get("type").toString();
+            if (type == "Bluetooth") {
+
+            }
+        }
         // TODO: Click a friend and redirect to FoldFragment.
+
+
+        // TODO: if the bluetooth friend has been paired, redirect to FoldFragment.
     }
 
     @Override
@@ -115,7 +130,15 @@ public class FriendsFragment extends ListFragment {
                     }
                 });
                 // TODO: bluetoothButton OnClick Event
-
+                Button bluetoothButton = (Button) view.findViewById(R.id.button_bluetooth);
+                bluetoothButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
+                        startActivity(discoverableIntent);
+                    }
+                });
                 this.setListAdapter(null);
                 listviewLayout.setVisibility(View.GONE);
             }
@@ -127,6 +150,10 @@ public class FriendsFragment extends ListFragment {
         }
     }
 
+    private void onActivityResult() {
+
+    }
+
     private void searchFriends() {
         new Thread(new Runnable() {
             @Override
@@ -136,6 +163,13 @@ public class FriendsFragment extends ListFragment {
                 client.send();
             }
         }).start();
+        });
+        // search bluetooth
+        bluetoothUtil.searchBluetoothDevice();
+        ArrayAdapter<JSONObject> arrayAdapter = bluetoothUtil.getArrayAdapter();
+        for (int i = 0;i <arrayAdapter.getCount(); i++) {
+            addFriend(arrayAdapter.getItem(i));
+        }
     }
 
     private List<Map<String, Object>> getFriendList() {
@@ -143,8 +177,8 @@ public class FriendsFragment extends ListFragment {
         Map<String, Object> map;
         List<FriendInfo> infoList = new ArrayList<>();
 
-        infoList.add(new FriendInfo("MacBook", "192.168.0.2", R.mipmap.ic_pc));
-        infoList.add(new FriendInfo("iPhone", "192.168.0.3", R.mipmap.ic_phone));
+        infoList.add(new FriendInfo("MacBook", "192.168.0.2", R.mipmap.ic_pc, "WiFi"));
+        infoList.add(new FriendInfo("iPhone", "192.168.0.3", R.mipmap.ic_phone, "WiFi"));
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
@@ -179,11 +213,13 @@ class FriendInfo {
     private String name;
     private String addr;
     private int icon;
+    private String type;
 
-    public FriendInfo(String name, String addr, int icon) {
+    public FriendInfo(String name, String addr, int icon, String type) {
         setName(name);
         setAddr(addr);
         setIcon(icon);
+        setType(type);
     }
     public FriendInfo(JSONObject json) {
         try {
@@ -210,4 +246,7 @@ class FriendInfo {
 
     public void setIcon(int icon) { this.icon = icon; }
     public int getIcon() { return icon; }
+
+    public void setType(String type) {this.type = type; }
+    public String getType() {return type; }
 }
