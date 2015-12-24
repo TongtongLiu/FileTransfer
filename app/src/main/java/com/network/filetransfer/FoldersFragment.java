@@ -109,7 +109,7 @@ public class FoldersFragment extends ListFragment {
             if (files[i].isDirectory() && files[i].getPath().indexOf("/.") == -1) {
                 getFiles(files[i].getPath(), type, infoList);
             }
-            else {
+            else if (files[i].isFile()){
                 switch (type) {
                     case "picture": {
                         BitmapFactory.Options options = new BitmapFactory.Options();
