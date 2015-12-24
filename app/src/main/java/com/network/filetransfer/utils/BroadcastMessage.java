@@ -1,8 +1,10 @@
 package com.network.filetransfer.utils;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -60,7 +62,8 @@ public class BroadcastMessage {
     }
 
     public static String getDeviceName() {
-        return android.os.Build.MODEL;
+        BluetoothAdapter myDevice = BluetoothAdapter.getDefaultAdapter();
+        return myDevice.getName();
     }
 
     public JSONObject getLocalInfo() {

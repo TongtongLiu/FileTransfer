@@ -16,8 +16,9 @@ public class BroadcastClient {
     }
 
     public void send() {
+        DatagramSocket socket = null;
         try {
-            DatagramSocket socket = new DatagramSocket(CLIENT_PORT);
+            socket = new DatagramSocket(CLIENT_PORT);
             InetAddress inetAddr = InetAddress.getByName("255.255.255.255");
             byte[] message = new BroadcastMessage(context).getLocalInfoString().getBytes();
             DatagramPacket packet = new DatagramPacket(message, message.length, inetAddr, BroadcastServer.SERVER_PORT);
@@ -25,6 +26,9 @@ public class BroadcastClient {
             socket.close();
         }  catch (IOException e) {
             e.printStackTrace();
+            if (socket != null) {
+                socket.close();
+            }
         }
     }
 }

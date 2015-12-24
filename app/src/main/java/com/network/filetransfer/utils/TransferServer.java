@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class TransferServer {
-    static final int PORT = 7775;
+    static final int PORT = 7774;
     public static ArrayList<Socket> socketList = new ArrayList<>();
     private Context context;
     private Handler handler;

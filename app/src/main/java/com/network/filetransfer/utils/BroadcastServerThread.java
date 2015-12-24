@@ -12,17 +12,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class BroadcastServerThread implements Runnable {
     private static final String TAG = "BroadcastServerThread";
 
-    private DatagramSocket server;
     private DatagramPacket packet;
     private Context context;
     private Handler handler;
 
-    public BroadcastServerThread(DatagramSocket server, DatagramPacket packet, Context context, Handler handler) {
-        this.server = server;
+    public BroadcastServerThread(DatagramPacket packet, Context context, Handler handler) {
         this.packet = packet;
         this.context = context;
         this.handler = handler;
@@ -30,17 +29,25 @@ public class BroadcastServerThread implements Runnable {
 
     public void run() {
         // TODO: Handle the broadcast message
+        Log.v(TAG, "Receive A Broadcast Message");
         if (packet.getAddress().toString().substring(1).equals(new BroadcastMessage(context).getWiFiLocalIPAdress())) { return; }
 
-        if (packet.getPort() != BroadcastServer.SERVER_PORT) {
-            byte[] reMessage = new BroadcastMessage(context).getLocalInfoString().getBytes();
-            DatagramPacket rePacket = new DatagramPacket(reMessage, reMessage.length);
-            rePacket.setAddress(packet.getAddress());
-            rePacket.setPort(BroadcastServer.SERVER_PORT);
+        if (packet.getPort() == BroadcastClient.CLIENT_PORT) {
+            DatagramSocket socket = null;
             try {
-                server.send(rePacket);
+                byte[] reMessage = new BroadcastMessage(context).getLocalInfoString().getBytes();
+                DatagramPacket rePacket = new DatagramPacket(reMessage, reMessage.length);
+                rePacket.setAddress(packet.getAddress());
+                rePacket.setPort(BroadcastServer.SERVER_PORT);
+                socket = new DatagramSocket();
+                socket.send(rePacket);
+                Log.v(TAG, "Reply To Broadcast Message");
+                socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
+                if (socket != null) {
+                    socket.close();
+                }
             }
         }
 

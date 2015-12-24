@@ -60,7 +60,6 @@ public class FriendsFragment extends ListFragment {
         Log.v(TAG, "OnCreateView");
         if (getView() == null) {
             initFragment(view);
-            searchFriends();
         }
         return view;
     }
@@ -90,7 +89,6 @@ public class FriendsFragment extends ListFragment {
             View view = getView();
             if (view != null) {
                 initFragment(view);
-                searchFriends();
             }
         } else {
             // Log.v(TAG, "OnPause");
@@ -107,12 +105,6 @@ public class FriendsFragment extends ListFragment {
                 public void onRefresh() {
                     Log.v(TAG, "onRefresh");
                     listviewLayout.setRefreshing(true);
-                    //(new Handler()).postDelayed(new Runnable() {
-                    //    @Override
-                    //    public void run() {
-                    //        listviewLayout.setRefreshing(false);
-                    //    }
-                    //}, 3000);
                     friendList.clear();
                     searchFriends();
                     adapter.notifyDataSetChanged();
@@ -146,6 +138,7 @@ public class FriendsFragment extends ListFragment {
                 connectionLayout.setVisibility(View.GONE);
                 this.setListAdapter(adapter);
                 listviewLayout.setVisibility(View.VISIBLE);
+                searchFriends();
             }
         }
     }
