@@ -29,6 +29,7 @@ public class FoldersFragment extends ListFragment {
     final String[] files_from = new String[] {"file_title", "path", "icon"};
     final int[] files_to = new int[] {R.id.text_all_files_title, R.id.text_all_files_path, R.id.image_all_files_icon};
 
+    private boolean hasFriendSelected = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
