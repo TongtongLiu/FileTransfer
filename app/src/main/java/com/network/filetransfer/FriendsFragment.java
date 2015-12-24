@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.network.filetransfer.utils.BluetoothUtil;
@@ -35,8 +35,8 @@ public class FriendsFragment extends ListFragment {
     private NetworkUtil networkUtil;
     private BluetoothUtil bluetoothUtil;
 
-    static final String[] from = new String[] {"name", "addr", "icon"};
-    static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon};
+    static final String[] from = new String[] {"name", "addr", "icon", "type"};
+    static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon, R.id.text_friends_type};
     private List<Map<String, Object>> friendList;
     private SimpleAdapter adapter;
     private int REQUEST_DISCOVERALBLE_BT = 1;
@@ -65,20 +65,27 @@ public class FriendsFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView parent, View view, int postion, long id) {
-        Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
-        ListView listView = (ListView)parent;
-        HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
-        // TODO: if bluetooth friend, pair each other first.
-        if (map.containsKey("type")) {
-            String type = map.get("type").toString();
-            if (type == "Bluetooth") {
-                bluetoothUtil.openServer();
-                //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
-            }
-        }
         // TODO: Click a friend and redirect to FoldFragment.
+        String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
+        String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
+        if (type.equals("WiFi")) {
 
+        }
+        else {
+
+        }
+
+        //ListView listView = (ListView)parent;
+        //HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
+        // TODO: if bluetooth friend, pair each other first.
+        //if (map.containsKey("type")) {
+        //    String type = map.get("type").toString();
+        //    if (type == "Bluetooth") {
+        //        bluetoothUtil.openServer();
+        //        //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
+        //    }
+        //}
         // TODO: if the bluetooth friend has been paired, redirect to FoldFragment.
     }
 
@@ -219,7 +226,7 @@ class FriendInfo {
                 setType(json.getString("type"));
             }
             else {
-                setType("Phone");
+                setType("Bluetooth");
             }
             if (json.has("icon")) {
                 String iconStr = json.getString("icon");

@@ -40,5 +40,12 @@
             android:textSize="12sp" >
         </TextView>
 
+        <TextView
+            android:id="@+id/text_friends_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" >
+        </TextView>
+
     </LinearLayout>
 </LinearLayout>
