@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,8 +29,6 @@ public class FoldersFragment extends ListFragment {
 
     final String[] files_from = new String[] {"file_title", "path", "icon"};
     final int[] files_to = new int[] {R.id.text_all_files_title, R.id.text_all_files_path, R.id.image_all_files_icon};
-
-    private boolean hasFriendSelected = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,9 +103,26 @@ public class FoldersFragment extends ListFragment {
         return list;
     }
 
-    private List<AllFilesInfo> getFiles(String type) {
-        List<AllFilesInfo> infoList = new ArrayList<>();
-        return infoList;
+    private void getFiles(String mDir, String type, List<AllFilesInfo> infoList) {
+        File[] files = new File(mDir).listFiles();
+        for (int i = 0;i < files.length;i ++) {
+            if (files[i].isDirectory() && files[i].getPath().indexOf("/.") == -1) {
+                getFiles(files[i].getPath(), type, infoList);
+            }
+            else {
+                switch (type) {
+                    case "picture": {
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        options.inJustDecodeBounds = true;
+                        BitmapFactory.decodeFile(files[i].getPath(), options);
+                        if (options.outWidth != -1) {
+                            infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_phone));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private List<Map<String, Object>> getAllFilesList(String mDir) {
@@ -147,10 +163,12 @@ public class FoldersFragment extends ListFragment {
         List<Map<String, Object>> list = new ArrayList<>();
         Map<String, Object> map;
         List<AllFilesInfo> infoList = new ArrayList<>();
+        Uri uri = Uri.fromFile(new File("/sdcard"));
+        String mDir = uri.getPath();
 
         Log.v(TAG, "data");
 
-        infoList = getFiles("picture");
+        getFiles(mDir, "picture", infoList);
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
