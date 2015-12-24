@@ -2,6 +2,7 @@ package com.network.filetransfer;
 
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -72,7 +73,8 @@ public class FriendsFragment extends ListFragment {
         if (map.containsKey("type")) {
             String type = map.get("type").toString();
             if (type == "Bluetooth") {
-                bluetoothUtil.openServer();
+                String MAC_addr = map.get("addr").toString();
+                bluetoothUtil.connectToServer(MAC_addr);
                 //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
             }
         }
