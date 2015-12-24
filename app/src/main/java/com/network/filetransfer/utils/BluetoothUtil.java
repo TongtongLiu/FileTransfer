@@ -42,6 +42,7 @@ public class BluetoothUtil {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("name", device.getName());
                     jsonObject.put("addr", device.getAddress());
+                    jsonObject.put("type", "Bluetooth");
                     Message message = new Message();
                     message.what = MainActivity.MainHandler.bluetooth_search;
                     message.obj = jsonObject;
@@ -67,14 +68,14 @@ public class BluetoothUtil {
     public boolean isBluetoothSupported() {return (adapter != null); }
 
     public void searchBluetoothDevice() {
-        queryPairedDevice();
+        // queryPairedDevice();
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
         adapter.startDiscovery();
     }
 
-    public void queryPairedDevice() {
+    private void queryPairedDevice() {
         Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
         // If there are paired devices
         if (pairedDevices.size() > 0) {
@@ -100,6 +101,13 @@ public class BluetoothUtil {
     public void destroy() {
         context.unregisterReceiver(mReceiver);
     }
+
+    public void openServer() {
+        AcceptThread acceptThread = new AcceptThread();
+        acceptThread.start();
+    }
+
+    public void connectToServer(){}
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;

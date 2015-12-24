@@ -39,7 +39,7 @@ public class FriendsFragment extends ListFragment {
     static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon};
     private List<Map<String, Object>> friendList;
     private SimpleAdapter adapter;
-    private int REQUEST_ENABLE_BT = 1;
+    private int REQUEST_DISCOVERALBLE_BT = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +72,8 @@ public class FriendsFragment extends ListFragment {
         if (map.containsKey("type")) {
             String type = map.get("type").toString();
             if (type == "Bluetooth") {
-
+                bluetoothUtil.openServer();
+                //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
             }
         }
         // TODO: Click a friend and redirect to FoldFragment.
@@ -128,7 +129,7 @@ public class FriendsFragment extends ListFragment {
                     public void onClick(View v) {
                         Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
                         discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 0);
-                        startActivity(discoverableIntent);
+                        startActivityForResult(discoverableIntent, REQUEST_DISCOVERALBLE_BT);
                     }
                 });
                 this.setListAdapter(null);
@@ -187,6 +188,7 @@ public class FriendsFragment extends ListFragment {
         map.put("name", info.getName());
         map.put("addr", info.getAddr());
         map.put("icon", info.getIcon());
+        map.put("type", info.getType());
         if (!friendList.contains(map)) {
             Log.v(TAG, "A New User");
             friendList.add(map);
@@ -220,6 +222,7 @@ class FriendInfo {
                 else {
                     setIcon(R.mipmap.ic_pc);
                 }
+                setType(json.getString("type"));
             }
         } catch (JSONException e) {
             e.printStackTrace();

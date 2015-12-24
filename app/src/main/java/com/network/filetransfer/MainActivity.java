@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -141,13 +142,7 @@ public class MainActivity extends Activity {
                     break;
                 case bluetooth_search:
                     FriendsFragment b_fragment = (FriendsFragment) adapter.getItem(2);
-                    JSONObject jsonObject = (JSONObject) message.obj;
-                    try {
-                        jsonObject.put("type", "bluetooth");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    b_fragment.addFriend(jsonObject);
+                    b_fragment.addFriend((JSONObject)message.obj);
                     break;
                 default:
                     break;
@@ -199,6 +194,9 @@ public class MainActivity extends Activity {
         MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
         Log.v(TAG, "BlueToothUtil Init");
         bluetoothUtil = new BluetoothUtil(this, handler);
+        if (bluetoothUtil.isBluetoothEnabled()) {
+            bluetoothUtil.openServer();
+        }
     }
 
     private void destroyBluetoothUtil() {
@@ -268,6 +266,22 @@ public class MainActivity extends Activity {
                 break;
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        int REQUEST_DISCOVERALBLE_BT = 1;
+
+        if(requestCode == REQUEST_DISCOVERALBLE_BT){
+            if(bluetoothUtil.isBluetoothEnabled()) {
+                bluetoothUtil.openServer();
+            }
+            else {
+                // open bluetooth failed
+            }
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
