@@ -2,6 +2,7 @@ package com.network.filetransfer;
 
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -14,7 +15,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.widget.PullRefreshLayout;
 import com.network.filetransfer.utils.BluetoothUtil;
@@ -65,6 +66,18 @@ public class FriendsFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView parent, View view, int postion, long id) {
+        Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
+        ListView listView = (ListView)parent;
+        HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
+        // TODO: if bluetooth friend, pair each other first.
+        if (map.containsKey("type")) {
+            String type = map.get("type").toString();
+            if (type == "Bluetooth") {
+                String MAC_addr = map.get("addr").toString();
+                bluetoothUtil.connectToServer(MAC_addr);
+                //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
+            }
+        }
         // TODO: Click a friend and redirect to FoldFragment.
         String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();

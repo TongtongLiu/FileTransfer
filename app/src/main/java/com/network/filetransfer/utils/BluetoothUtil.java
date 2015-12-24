@@ -107,7 +107,11 @@ public class BluetoothUtil {
         acceptThread.start();
     }
 
-    public void connectToServer(){}
+    public void connectToServer(String MAC_addr) {
+        BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
+        ConnectThread connectThread = new ConnectThread(device);
+        connectThread.start();
+    }
 
     private class AcceptThread extends Thread {
         private final BluetoothServerSocket mmServerSocket;
