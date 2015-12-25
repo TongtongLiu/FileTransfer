@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
@@ -96,7 +97,19 @@ public class BluetoothUtil {
         BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
         ConnectThread connectThread = new ConnectThread(device, file);
         connectThread.start();
-
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", file);
+            jsonObject.put("origin", device.getName());
+            jsonObject.put("time", new Date());
+            jsonObject.put("type", "Bluetooth");
+            Message message = new Message();
+            message.what = MainHandler.bluetooth_sendfile;
+            message.obj = jsonObject;
+            handler.sendMessage(message);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private class AcceptThread extends Thread {

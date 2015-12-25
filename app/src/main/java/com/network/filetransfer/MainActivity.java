@@ -153,6 +153,7 @@ public class MainActivity extends Activity {
     private void initServers() {
         mainHandler = new MainHandler(this);
         mainHandler.addFriendsFragment((FriendsFragment) fragmentPagerAdapter.getItem(2));
+        mainHandler.addHomeFragment((HomeFragment) fragmentPagerAdapter.getItem(0));
         Log.v(TAG, "BroadcastServer Start");
         new Thread(new BServer(this, mainHandler)).start();
         Log.v(TAG, "TransferServer Start");

@@ -10,8 +10,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import com.baoyz.widget.PullRefreshLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,7 +30,7 @@ public class HomeFragment extends ListFragment {
     static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_time,
                                        R.id.text_transfer_name, R.id.image_transfer_icon};
     private List<Map<String, Object>> transferList;
-    private MySimpleAdapter adapter;
+    private SimpleAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,8 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        adapter = new MySimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
+        getTransferList(transferList);
+        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
     @Override
@@ -98,17 +103,16 @@ public class HomeFragment extends ListFragment {
 //    }
 
     private boolean anyTransfer() {
-        return false;
+        return (transferList.size() > 0);
     }
 
-    private List<Map<String, Object>> getTransferList() {
-        List<Map<String, Object>> list = new ArrayList<>();
+    private void getTransferList(List<Map<String, Object>> list) {
         Map<String, Object> map;
         List<TransferInfo> infoList = new ArrayList<>();
 
         Log.v(TAG, "getTransferList");
-        infoList.add(new TransferInfo("test.png", "ME-MiPhone", new Date(), R.mipmap.ic_png));
-        infoList.add(new TransferInfo("test.doc", "Nexus CLY", new Date(), R.mipmap.ic_other));
+        infoList.add(new TransferInfo("test.png", "ME-MiPhone", new Date(), R.mipmap.ic_png, "WiFi"));
+        infoList.add(new TransferInfo("test.doc", "Nexus CLY", new Date(), R.mipmap.ic_other, "Bluetooth"));
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
@@ -119,9 +123,23 @@ public class HomeFragment extends ListFragment {
             map.put("icon", info.getIcon());
             list.add(map);
         }
-
-        return list;
     }
+
+    public void addTransfer(JSONObject json) {
+        Log.v(TAG, "addTransfer");
+        Map<String, Object> map = new HashMap<>();
+        TransferInfo info = new TransferInfo(json);
+        map.put("name", info.getName());
+        map.put("origin", info.getOrigin());
+        map.put("time", info.getTime());
+        map.put("icon", info.getIcon());
+        if (!transferList.contains(map)) {
+            Log.v(TAG, "A New User");
+            transferList.add(map);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
 }
 
 class TransferInfo {
@@ -129,12 +147,52 @@ class TransferInfo {
     private String origin;
     private Date time;
     private int icon;
+    private String type;
 
-    public TransferInfo(String name, String origin, Date time, int icon) {
+    public TransferInfo(String name, String origin, Date time, int icon, String type) {
         setName(name);
         setOrigin(origin);
         setTime(time);
         setIcon(icon);
+        setType(type);
+    }
+
+    public TransferInfo(JSONObject json) {
+        try {
+            if (json.has("name")) { setName(json.getString("name")); }
+            if (json.has("origin")) { setOrigin(json.getString("origin")); }
+            if (json.has("time")) { setOrigin(json.getString("time")); }
+            if (json.has("type")) {
+                setType(json.getString("type"));
+            }
+            else {
+                setType("Bluetooth");
+            }
+            if (json.has("icon")) {
+                String iconStr = json.getString("icon");
+                if (type.equals("WiFi")) {
+                    if (iconStr.equals("Phone")) {
+                        setIcon(R.mipmap.ic_phone_wifi);
+                    }
+                    else {
+                        setIcon(R.mipmap.ic_pc_wifi);
+                    }
+                }
+                else {
+                    if (iconStr.equals("Phone")) {
+                        setIcon(R.mipmap.ic_phone_bluetooth);
+                    }
+                    else {
+                        setIcon(R.mipmap.ic_pc_bluetooth);
+                    }
+                }
+            }
+            else {
+                setIcon(R.mipmap.ic_bluetooth);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setName(String name) { this.name = name; }
@@ -148,4 +206,7 @@ class TransferInfo {
 
     public void setIcon(int icon) { this.icon = icon; }
     public int getIcon() { return icon; }
+
+    public void setType(String type) { this.type = type; }
+    public String getType() { return type; }
 }
