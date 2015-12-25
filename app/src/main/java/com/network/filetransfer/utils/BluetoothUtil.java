@@ -31,6 +31,7 @@ public class BluetoothUtil {
     private BluetoothAdapter adapter;
     private BluetoothManager manager;
     private Handler handler;
+    private UUID mmUUID;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -59,6 +60,7 @@ public class BluetoothUtil {
         this.handler = handler;
         adapter = BluetoothAdapter.getDefaultAdapter();
         manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        mmUUID = UUID.randomUUID();
     }
 
     public boolean isBluetoothEnabled() {
@@ -122,9 +124,8 @@ public class BluetoothUtil {
             BluetoothServerSocket tmp = null;
             try {
                 // MY_UUID is the app's UUID string, also used by the client code
-                UUID MY_UUID =  UUID.randomUUID();
                 String NAME = Build.MODEL;
-                tmp = adapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                tmp = adapter.listenUsingRfcommWithServiceRecord(NAME, mmUUID);
             } catch (IOException e) { }
             mmServerSocket = tmp;
         }
@@ -177,7 +178,7 @@ public class BluetoothUtil {
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
                 UUID MY_UUID =  UUID.randomUUID();
-                tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
+                tmp = device.createRfcommSocketToServiceRecord(mmUUID);
             } catch (IOException e) { }
             mmSocket = tmp;
         }
