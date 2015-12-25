@@ -9,9 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,14 +19,14 @@ import java.util.Map;
 
 public class FoldersFragment extends ListFragment {
     private static final String TAG = "FolderFragments";
-
-    private int oldPosition = -1;
     
     final String[] from = new String[] {"name", "path", "icon"};
     final int[] to = new int[] {R.id.text_folders_name, R.id.text_folders_path, R.id.image_folders_icon};
     List<Map<String, Object>> fileList;
-    SimpleAdapter adapter;
-    
+    MySimpleAdapter adapter;
+
+    public String file;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class FoldersFragment extends ListFragment {
         fileList = new ArrayList<>();
         String mDir = Uri.fromFile(new File("/sdcard")).getPath();
         getFoldersList(mDir, fileList);
-        adapter = new SimpleAdapter(this.getActivity(), fileList, R.layout.listitem_folders, from, to);
+        adapter = new MySimpleAdapter(this.getActivity(), fileList, R.layout.listitem_folders, from, to);
         this.setListAdapter(adapter);
 
         return view;
@@ -49,34 +47,24 @@ public class FoldersFragment extends ListFragment {
     public void onListItemClick(ListView parent, View view, int position, long id) {
         ListView listView = (ListView)parent;
         HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(position);
-        String mDir = map.get("path").toString();
-        File f = new File(mDir);
+        file = map.get("path").toString();
+        File f = new File(file);
         if (f.isDirectory()) {
             getFoldersList(f.getPath(), fileList);
+            adapter.clearSelectedItem();
+            file = "";
             adapter.notifyDataSetChanged();
-        } else {
-            // ========================================================================
+        }
+        else {
             if (getActivity().findViewById(R.id.button_send) == null) {
                 Intent intent = new Intent(getActivity(), FriendsActivity.class);
-                intent.putExtra("file", mDir);
+                intent.putExtra("file", file);
                 startActivity(intent);
             }
             else {
-                ImageView imageView;
-                if (oldPosition >= 0) {
-                    View itemView = parent.getChildAt(oldPosition);
-                    imageView = (ImageView) itemView.findViewById(R.id.image_folders_selected);
-                    imageView.setVisibility(View.INVISIBLE);
-                }
-                if (oldPosition != position) {
-                    imageView = (ImageView) view.findViewById(R.id.image_folders_selected);
-                    imageView.setVisibility(View.VISIBLE);
-                    oldPosition = position;
-                } else {
-                    oldPosition = -1;
-                }
+                adapter.setSelectedItem(position);
+                adapter.notifyDataSetInvalidated();
             }
-            // ========================================================================
         }
     }
 

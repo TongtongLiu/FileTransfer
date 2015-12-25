@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class FriendsActivity extends Activity {
+    private String type;
+    private String addr;
     private String file;
     private FriendsFragment fragment;
 
@@ -39,7 +41,9 @@ public class FriendsActivity extends Activity {
 
     class SendClickListener implements View.OnClickListener {
         public void onClick(View v) {
-
+            type = fragment.type;
+            addr = fragment.addr;
+            // TODO send type addr file
         }
     }
 }

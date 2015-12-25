@@ -8,6 +8,8 @@ import android.widget.Button;
 public class FoldersActivity extends Activity {
     private String type;
     private String addr;
+    private String file;
+    private FoldersFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,9 @@ public class FoldersActivity extends Activity {
         addr = getIntent().getStringExtra("addr");
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());
+
+        fragment = new FoldersFragment();
+        getFragmentManager().beginTransaction().replace(R.id.folders_fragment, fragment).commit();
     }
 
     class BackClickListener implements View.OnClickListener {
@@ -30,7 +35,8 @@ public class FoldersActivity extends Activity {
 
     class SendClickListener implements View.OnClickListener {
         public void onClick(View v) {
-
+            file = fragment.file;
+            // TODO send type addr file
         }
     }
 }
