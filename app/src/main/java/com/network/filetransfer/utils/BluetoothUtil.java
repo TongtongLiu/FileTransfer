@@ -6,12 +6,14 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.widget.Toast;
 
 import com.network.filetransfer.MainActivity;
 import com.network.filetransfer.MainHandler;
@@ -19,6 +21,8 @@ import com.network.filetransfer.MainHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -194,58 +198,35 @@ public class BluetoothUtil {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
-
-            // Get the input and output streams, using temp objects because
-            // member streams are final
             try {
                 tmpIn = socket.getInputStream();
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) { }
-
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
             mmfile = file;
         }
 
         public void run() {
-            byte[] fileBytes = new byte[1024];  // buffer store for the stream
             try {
-                fileBytes = fullyReadFileToBytes(mmfile); // bytes returned from read()
-                write(fileBytes);
+                // Send File Name
+                mmOutStream.write(mmfile.getName().getBytes());
+                mmOutStream.flush();
+                // Send File Content
+                FileInputStream filein = new FileInputStream(mmfile);
+                DataInputStream fileInput = new DataInputStream(new BufferedInputStream(filein));
+                byte[] buffer = new byte[4096];
+                int read = 0;
+                while ((read = fileInput.read(buffer)) != -1)
+                {
+                    mmOutStream.write(buffer, 0, read);
+                }
+                mmOutStream.flush();
+                fileInput.close();
+                mmSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-
-        public byte[] fullyReadFileToBytes(File file) throws IOException {
-            int size = (int) file.length();
-            byte bytes[] = new byte[size];
-            byte tmpBuff[] = new byte[size];
-            FileInputStream fs = new FileInputStream(file);
-            try {
-                int read = fs.read(bytes, 0, size);
-                if (read < size) {
-                    int remain = size - read;
-                    while (remain > 0) {
-                        read = fs.read(tmpBuff, 0, remain);
-                        System.arraycopy(tmpBuff, 0, bytes, size - remain, read);
-                        remain -= read;
-                    }
-                }
-            }  catch (IOException e){
-                throw e;
-            }
-            finally {
-                fs.close();
-            }
-            return bytes;
-        }
-
-        /* Call this from the main activity to send data to the remote device */
-        public void write(byte[] bytes) {
-            try {
-                mmOutStream.write(bytes);
-            } catch (IOException e) { }
         }
 
         /* Call this from the main activity to shutdown the connection */
