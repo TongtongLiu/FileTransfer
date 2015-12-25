@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import android.os.Bundle;
 import android.preference.Preference;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.network.filetransfer.R;
 
 public class SettingsFragment extends PreferenceFragment {
     @Override

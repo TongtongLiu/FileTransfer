@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import java.util.ArrayList;
 
@@ -21,6 +21,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.network.filetransfer.R;
+import com.network.filetransfer.adapters.MyFragmentPagerAdapter;
 import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastServer;
 import com.network.filetransfer.utils.TransferServer;

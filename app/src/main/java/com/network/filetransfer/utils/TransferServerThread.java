@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.network.filetransfer.MainHandler;
+import com.network.filetransfer.ui.MainHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;

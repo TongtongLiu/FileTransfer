@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import android.app.ListFragment;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.network.filetransfer.R;
+import com.network.filetransfer.adapters.ChoiceSimpleAdapter;
 
 import java.io.File;
 import java.util.ArrayList;

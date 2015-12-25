@@ -5,15 +5,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.network.filetransfer.MainActivity;
-import com.network.filetransfer.MainHandler;
+import com.network.filetransfer.ui.MainHandler;
 
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 
 public class BroadcastServerThread implements Runnable {
     private static final String TAG = "BroadcastServerThread";

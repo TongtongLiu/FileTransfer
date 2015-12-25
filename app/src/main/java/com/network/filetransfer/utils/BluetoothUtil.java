@@ -6,20 +6,16 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.network.filetransfer.MainActivity;
-import com.network.filetransfer.MainHandler;
+import com.network.filetransfer.ui.MainHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +34,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 
 public class BluetoothUtil {

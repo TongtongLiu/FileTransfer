@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import android.app.ListFragment;
 import android.os.Bundle;
@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.baoyz.widget.PullRefreshLayout;
+import com.network.filetransfer.R;
+import com.network.filetransfer.adapters.ProgressSimpleAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

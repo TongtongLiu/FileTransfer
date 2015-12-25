@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.adapters;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.network.filetransfer.R;
 import com.network.filetransfer.utils.TransferClient;
 
 public class FriendsActivity extends Activity {

@@ -1,4 +1,4 @@
-package com.network.filetransfer;
+package com.network.filetransfer.ui;
 
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
@@ -16,6 +16,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
+import com.network.filetransfer.R;
+import com.network.filetransfer.adapters.ChoiceSimpleAdapter;
 import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastClient;
 import com.network.filetransfer.utils.NetworkUtil;
