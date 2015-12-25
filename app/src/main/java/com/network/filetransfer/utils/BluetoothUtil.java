@@ -22,9 +22,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,19 +71,16 @@ public class BluetoothUtil {
         manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
         String uuid = "4bbd4690-ab36-4ed2-9a8e-40723b1790c3";
         mmUUID = UUID.fromString(uuid);
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
     }
 
     public boolean isBluetoothEnabled() {
         return (adapter != null && adapter.isEnabled());
     }
 
-    public boolean isBluetoothSupported() {return (adapter != null); }
-
     public void searchBluetoothDevice() {
-        // queryPairedDevice();
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        context.registerReceiver(mReceiver, filter); // Don't forget to unregister during onDestroy
+        adapter.cancelDiscovery();
         adapter.startDiscovery();
     }
 
@@ -107,7 +107,8 @@ public class BluetoothUtil {
             message.what = MainHandler.bluetooth_sendfile;
             message.obj = jsonObject;
             handler.sendMessage(message);
-        } catch (JSONException e) {
+        }
+        catch (JSONException e) {
             e.printStackTrace();
         }
     }
@@ -128,9 +129,9 @@ public class BluetoothUtil {
         }
 
         public void run() {
+            BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
             while (true) {
-                BluetoothSocket socket = null;
                 try {
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
@@ -139,8 +140,15 @@ public class BluetoothUtil {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket);
+                    BluetoothDevice device = socket.getRemoteDevice();
+                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket, device);
                     bluetoothReceiveFile.start();
+                    try {
+                        mmServerSocket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 }
             }
         }
@@ -181,7 +189,8 @@ public class BluetoothUtil {
                 // Connect the device through the socket. This will block
                 // until it succeeds or throws an exception
                 mmSocket.connect();
-            } catch (IOException connectException) {
+            }
+            catch (IOException connectException) {
                 // Unable to connect; close the socket and get out
                 try {
                     mmSocket.close();
@@ -224,7 +233,12 @@ public class BluetoothUtil {
         public void run() {
             try {
                 // Send File Name
-                mmOutStream.write(mmfile.getName().getBytes());
+                byte[] nameBuffer = new byte[4096];
+                byte[] fileName = mmfile.getName().getBytes();
+                for (int i = 0;i < fileName.length;i ++) {
+                    nameBuffer[i] = fileName[i];
+                }
+                mmOutStream.write(nameBuffer);
                 mmOutStream.flush();
                 // Send File Content
                 FileInputStream filein = new FileInputStream(mmfile);
@@ -256,12 +270,13 @@ public class BluetoothUtil {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private File file;
+        private BluetoothDevice device;
 
-        public BluetoothReceiveFile(BluetoothSocket socket) {
+        public BluetoothReceiveFile(BluetoothSocket socket, BluetoothDevice device) {
             mmSocket = socket;
+            this.device = device;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
-            this.file = file;
 
             // Get the input and output streams, using temp objects because
             // member streams are final
@@ -275,20 +290,45 @@ public class BluetoothUtil {
         }
 
         public void run() {
-            byte[] buffer = new byte[1024];  // buffer store for the stream
-            int bytes; // bytes returned from read()
-
-            // Keep listening to the InputStream until an exception occurs
-            while (true) {
-                try {
-                    // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
-
-                } catch (IOException e) {
-                    break;
+            byte[] buffer = new byte[4096];
+            int read = 0;
+            try {
+                read = mmInStream.read(buffer);
+                byte[] nameBuffer = new byte[read];
+                for (int i = 0;i < read;i ++) {
+                    nameBuffer[i] = buffer[i];
                 }
+                String fileName = new String(nameBuffer);
+                String path = context.getExternalFilesDir(null).toString();
+                String filePath = path + File.separator + fileName;
+                file = new File(path, fileName);
+                file.createNewFile();
+                DataOutputStream fileOutput = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath))));
+                while ((read = mmInStream.read(buffer)) != -1)
+                {
+                    fileOutput.write(buffer, 0, read);
+                }
+                fileOutput.flush();
+                fileOutput.close();
+                mmSocket.close();
             }
-
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("name", file);
+                jsonObject.put("origin", device.getName());
+                jsonObject.put("time", new Date());
+                jsonObject.put("type", "Bluetooth");
+                Message message = new Message();
+                message.what = MainHandler.bluetooth_sendfile;
+                message.obj = jsonObject;
+                handler.sendMessage(message);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            openServer();
         }
 
         /* Call this from the main activity to shutdown the connection */

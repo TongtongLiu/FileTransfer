@@ -21,6 +21,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastServer;
@@ -247,6 +248,7 @@ public class MainActivity extends Activity {
             }
             else {
                 // open bluetooth failed
+                Toast.makeText(MainActivity.this, "蓝牙开启失败", Toast.LENGTH_SHORT).show();
             }
         }
     }

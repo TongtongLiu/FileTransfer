@@ -175,7 +175,9 @@ public class FriendsFragment extends ListFragment {
             }
         }).start();
         // search bluetooth
-        bluetoothUtil.searchBluetoothDevice();
+        if (bluetoothUtil.isBluetoothEnabled()) {
+            bluetoothUtil.searchBluetoothDevice();
+        }
     }
 
     private List<Map<String, Object>> getFriendList() {
