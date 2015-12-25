@@ -62,7 +62,7 @@ public class FriendsActivity extends Activity {
                 }).start();
             }
             else {
-
+                MainActivity.bluetoothUtil.sendFile(addr, file);
             }
             finish();
         }
