@@ -1,6 +1,7 @@
 package com.network.filetransfer;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,14 @@ public class FoldersActivity extends Activity {
         public void onClick(View v) {
             file = fragment.file;
             // TODO send type addr file
+            if (type.equals("Bluetooth")) {
+                MainActivity.bluetoothUtil.sendFile(addr, file);
+            }
+            else {
+
+            }
+            Intent intent = new Intent(FoldersActivity.this,MainActivity.class);
+            startActivity(intent);
         }
     }
 }

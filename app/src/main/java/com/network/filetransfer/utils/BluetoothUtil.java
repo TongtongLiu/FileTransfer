@@ -92,10 +92,11 @@ public class BluetoothUtil {
         acceptThread.start();
     }
 
-    public void sendFile(String MAC_addr, File f) {
+    public void sendFile(String MAC_addr, String file) {
         BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
-        ConnectThread connectThread = new ConnectThread(device, f);
+        ConnectThread connectThread = new ConnectThread(device, file);
         connectThread.start();
+
     }
 
     private class AcceptThread extends Thread {
@@ -142,14 +143,14 @@ public class BluetoothUtil {
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
-        private File file;
+        private String file;
 
-        public ConnectThread(BluetoothDevice device, File f) {
+        public ConnectThread(BluetoothDevice device, String file) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
             mmDevice = device;
-            file = f;
+            this.file = file;
 
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
@@ -194,7 +195,7 @@ public class BluetoothUtil {
         private final OutputStream mmOutStream;
         private final File mmfile;
 
-        public BluetoothSendFile(BluetoothSocket socket, File file) {
+        public BluetoothSendFile(BluetoothSocket socket, String file) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
@@ -204,7 +205,7 @@ public class BluetoothUtil {
             } catch (IOException e) { }
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
-            mmfile = file;
+            mmfile = new File(file);
         }
 
         public void run() {
