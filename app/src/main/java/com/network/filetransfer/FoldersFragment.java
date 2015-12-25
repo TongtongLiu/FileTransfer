@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class FoldersFragment extends ListFragment {
     private static final String TAG = "FolderFragments";
-    
+
     final String[] from = new String[] {"name", "path", "icon"};
     final int[] to = new int[] {R.id.text_folders_name, R.id.text_folders_path, R.id.image_folders_icon};
     List<Map<String, Object>> fileList;
@@ -35,7 +35,7 @@ public class FoldersFragment extends ListFragment {
 
         ListView listView = (ListView) view.findViewById(android.R.id.list);
         listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
-        
+
         fileList = new ArrayList<>();
         String mDir = Uri.fromFile(new File("/sdcard")).getPath();
         getFoldersList(mDir, fileList);
