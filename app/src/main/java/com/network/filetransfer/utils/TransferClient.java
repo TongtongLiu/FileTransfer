@@ -1,11 +1,13 @@
 package com.network.filetransfer.utils;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import com.network.filetransfer.MainHandler;
+import com.network.filetransfer.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +30,7 @@ public class TransferClient {
     private static final String TAG = "TransferClient";
     static int CACHE = 4096;
 
+    private Context context;
     private String addr;
     private String name;
     private String file;
@@ -38,7 +41,8 @@ public class TransferClient {
     private BufferedWriter out;
     private String reply;
 
-    public TransferClient(String addr, String name, String file, Handler handler) {
+    public TransferClient(Context context, String addr, String name, String file, Handler handler) {
+        this.context = context;
         this.addr = addr;
         this.name = name;
         this.file = file;
@@ -105,23 +109,28 @@ public class TransferClient {
             send("" + fp.length());
             updateUI(name, fp.getName(), fp.length(), 0);
 
-            InputStream filein = new BufferedInputStream(new FileInputStream(file));
+            InputStream filein = new BufferedInputStream(new FileInputStream(file), 8 * 1024 * 1024);
             OutputStream fileout = new DataOutputStream(new BufferedOutputStream(client.getOutputStream()));
             byte[] buffer = new byte[CACHE];
             int count = filein.read(buffer, 0, CACHE);
             int total = 0;
+            int rate = Integer.parseInt(PreferenceUtil.getPrefString(context, "settings_transfer_rate_key", "256"));
+            int inteval = 1000 / (rate * 1024 / CACHE);
             while (count >= 0) {
                 fileout.write(buffer, 0, count);
                 fileout.flush();
                 total += count;
+                Thread.sleep(inteval);
+
                 updateUI(name, fp.getName(), fp.length(), total);
+
                 count = filein.read(buffer);
             }
             filein.close();
             fileout.close();
 
             client.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

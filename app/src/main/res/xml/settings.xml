@@ -2,8 +2,8 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory android:title="系统">
         <ListPreference android:title="传输速率"
-            android:key="@string/settings_trasfer_rate_key"
-            android:defaultValue="10"
+            android:key="@string/settings_transfer_rate_key"
+            android:defaultValue="100"
             android:dialogTitle="速率选择"
             android:entries="@array/settings_entries_transfer_rate"
             android:entryValues="@array/settings_entry_values_transfer_rate"/>

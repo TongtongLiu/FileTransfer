@@ -66,6 +66,9 @@ public class FoldersFragment extends ListFragment {
                 Intent intent = new Intent(getActivity(), FriendsActivity.class);
                 intent.putExtra("file", file);
                 startActivity(intent);
+                MainActivity activity = (MainActivity) getActivity();
+                activity.clearChioce();
+                activity.iconChange(0);
             }
             else {
                 boolean isSelected = adapter.setSelectedItem(position);

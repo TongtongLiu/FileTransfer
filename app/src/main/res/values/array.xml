@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="settings_entries_transfer_rate">
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
     </string-array>
 
     <string-array name="settings_entry_values_transfer_rate">
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+        <item>400</item>
+        <item>500</item>
     </string-array>
 </resources>

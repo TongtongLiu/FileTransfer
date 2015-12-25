@@ -56,7 +56,7 @@ public class FriendsActivity extends Activity {
                     @Override
                     public void run() {
                         Log.v(TAG, "TransferClient Start");
-                        TransferClient client = new TransferClient(addr, name, file, MainActivity.mainHandler);
+                        TransferClient client = new TransferClient(fragment.getActivity(), addr, name, file, MainActivity.mainHandler);
                         client.run();
                     }
                 }).start();

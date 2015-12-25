@@ -84,6 +84,9 @@ public class FriendsFragment extends ListFragment {
             intent.putExtra("addr", addr);
             intent.putExtra("name", name);
             startActivity(intent);
+            MainActivity activity = (MainActivity) getActivity();
+            activity.clearChioce();
+            activity.iconChange(0);
         }
         else {
             boolean isSelected = adapter.setSelectedItem(position);

@@ -29,7 +29,7 @@ public class HomeFragment extends ListFragment {
     static final String[] from = new String[] {"origin", "name", "icon"};
     static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_name, R.id.image_transfer_icon};
     private List<Map<String, Object>> transferList;
-    private SimpleAdapter adapter;
+    private ProgressSimpleAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
+        adapter = new ProgressSimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class HomeFragment extends ListFragment {
     //}
 
     public void addTransfer(JSONObject json) {
-        Log.v(TAG, "addTransfer");
+        //Log.v(TAG, "addTransfer");
         Map<String, Object> map = new HashMap<>();
         TransferInfo info = new TransferInfo(json);
         map.put("name", info.getName());
@@ -139,14 +139,14 @@ public class HomeFragment extends ListFragment {
             if (cmpmap.get("name").equals(map.get("name")) &&
                     cmpmap.get("origin").equals(map.get("origin")) &&
                     cmpmap.get("size").equals(map.get("size"))) {
-                Log.v(TAG, "An Existed Transfer");
+                //Log.v(TAG, "An Existed Transfer");
                 transferList.get(i).put("transferedSize", map.get("transferedSize"));
                 isExist = true;
                 break;
             }
         }
         if (!isExist) {
-            Log.v(TAG, "A New Transfer");
+            //Log.v(TAG, "A New Transfer");
             transferList.add(map);
         }
         adapter.notifyDataSetChanged();

@@ -70,6 +70,12 @@
         </LinearLayout>
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/bar_transfer"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"/>
+
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="wrap_content"-->

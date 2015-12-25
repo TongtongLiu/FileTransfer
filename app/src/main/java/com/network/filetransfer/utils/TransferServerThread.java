@@ -77,7 +77,7 @@ public class TransferServerThread implements Runnable {
 
     public void run() {
         try {
-            in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+            in = new BufferedReader(new InputStreamReader(server.getInputStream()), 8 * 1024 * 1024);
             out = new BufferedWriter(new OutputStreamWriter(server.getOutputStream()));
 
             String name = receive();
