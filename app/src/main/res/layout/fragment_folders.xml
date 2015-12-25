@@ -7,11 +7,11 @@
     android:paddingLeft="@dimen/fragment_padding"
     android:paddingStart="@dimen/fragment_padding"
     android:paddingRight="@dimen/fragment_padding"
-    android:paddingEnd="@dimen/fragment_padding"  >
+    android:paddingEnd="@dimen/fragment_padding" >
 
     <ListView
         android:id="@+id/android:list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
 </LinearLayout>

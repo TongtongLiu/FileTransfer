@@ -24,177 +24,80 @@ import java.util.Objects;
 public class FoldersFragment extends ListFragment {
     private static final String TAG = "FolderFragments";
 
-    final String[] from = new String[] {"name", "icon"};
-    final int[] to = new int[] {R.id.text_folders_name, R.id.image_folders_icon};
-
-    final String[] files_from = new String[] {"file_title", "path", "icon"};
-    final int[] files_to = new int[] {R.id.text_all_files_title, R.id.text_all_files_path, R.id.image_all_files_icon};
-
+    final String[] from = new String[] {"name", "path", "icon"};
+    final int[] to = new int[] {R.id.text_folders_name, R.id.text_folders_path, R.id.image_folders_icon};
+    List<Map<String, Object>> fileList;
+    SimpleAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_folders, container,false);
+        View view = inflater.inflate(R.layout.fragment_folders, container, false);
 
-        SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getFoldersList(), R.layout.listitem_folders, from, to);
+        fileList = new ArrayList<>();
+        String mDir = Uri.fromFile(new File("/sdcard")).getPath();
+        getFoldersList(mDir, fileList);
+        adapter = new SimpleAdapter(this.getActivity(), fileList, R.layout.listitem_folders, from, to);
         this.setListAdapter(adapter);
 
         return view;
     }
 
     public void onListItemClick(ListView parent, View view, int postion, long id) {
-        //Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
         ListView listView = (ListView)parent;
         HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
-        if (map.containsKey("name")) {
-            String name = map.get("name").toString();
-            switch (name) {
-                case "全部文件":
-                    Uri uri = Uri.fromFile(new File("/sdcard"));
-                    String mDir = uri.getPath();
-                    SimpleAdapter all_files_adapter = new SimpleAdapter(this.getActivity(), getAllFilesList(mDir), R.layout.listitem_all_files, files_from, files_to);
-                    this.setListAdapter(all_files_adapter);
-                    break;
-                case "图片":
-                    SimpleAdapter pictures_adapter = new SimpleAdapter(this.getActivity(), getPicturesList(), R.layout.listitem_all_files, files_from, files_to);
-                    this.setListAdapter(pictures_adapter);
-                    break;
-            }
+        String mDir = map.get("path").toString();
+        File f = new File(mDir);
+        if (f.isDirectory()) {
+            getFoldersList(f.getPath(), fileList);
+            adapter.notifyDataSetChanged();
+        } else {
+            // send file
         }
-        else if (map.containsKey("file_title")) {
-            String title = map.get("file_title").toString();
-            String mDir = map.get("path").toString();
-            if (mDir == "") {
-                SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getFoldersList(), R.layout.listitem_folders, from, to);
-                this.setListAdapter(adapter);
-            }
-            else {
-                File f = new File(mDir);
-                if (f.isDirectory()) {
-                    SimpleAdapter adapter = new SimpleAdapter(this.getActivity(), getAllFilesList(mDir), R.layout.listitem_all_files, files_from, files_to);
-                    this.setListAdapter(adapter);
-                } else {
-                    // send file
-                }
-            }
-        }
-
     }
 
-    private List<Map<String, Object>> getFoldersList() {
-        List<Map<String, Object>> list = new ArrayList<>();
+    private void getFoldersList(String mDir, List<Map<String, Object>> fileList) {
+        File f = new File(mDir);
+        File[] files = f.listFiles();
         Map<String, Object> map;
         List<FolderInfo> infoList = new ArrayList<>();
 
         Log.v(TAG, "data");
-        infoList.add(new FolderInfo("全部文件", R.mipmap.ic_folder));
-        infoList.add(new FolderInfo("图片", R.mipmap.ic_folder));
-        infoList.add(new FolderInfo("音乐", R.mipmap.ic_folder));
-        infoList.add(new FolderInfo("视频", R.mipmap.ic_folder));
-        infoList.add(new FolderInfo("应用", R.mipmap.ic_folder));
-
-        for (int i = 0; i < infoList.size(); i++) {
-            map = new HashMap<>();
-            FolderInfo info = infoList.get(i);
-            map.put("name", info.getName());
-            map.put("icon", info.getIcon());
-            list.add(map);
-        }
-
-        return list;
-    }
-
-    private void getFiles(String mDir, String type, List<AllFilesInfo> infoList) {
-        File[] files = new File(mDir).listFiles();
-        for (int i = 0;i < files.length;i ++) {
-            if (files[i].isDirectory() && files[i].getPath().indexOf("/.") == -1) {
-                getFiles(files[i].getPath(), type, infoList);
-            }
-            else if (files[i].isFile()){
-                switch (type) {
-                    case "picture": {
-                        BitmapFactory.Options options = new BitmapFactory.Options();
-                        options.inJustDecodeBounds = true;
-                        BitmapFactory.decodeFile(files[i].getPath(), options);
-                        if (options.outWidth != -1) {
-                            infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_file));
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private List<Map<String, Object>> getAllFilesList(String mDir) {
-        List<Map<String, Object>> list = new ArrayList<>();
-        Map<String, Object> map;
-        List<AllFilesInfo> infoList = new ArrayList<>();
-        File f = new File(mDir);
-        File[] files = f.listFiles();
-
-        Log.v(TAG, "data");
-
         if (!mDir.equals("/sdcard")) {
-            infoList.add(new AllFilesInfo("Back to ../", f.getParent(), R.mipmap.ic_folder));
-        }
-        else {
-            infoList.add(new AllFilesInfo("Back to ../", "", R.mipmap.ic_folder));
+            infoList.add(new FolderInfo("Back to ../", f.getParent(), R.mipmap.ic_folder));
         }
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
                 if (files[i].isDirectory()) {
-                    infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_folder));
+                    infoList.add(new FolderInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_folder));
                 }
                 else {
-                    infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_file));
+                    infoList.add(new FolderInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_file));
                 }
             }
         }
 
+        fileList.clear();
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
-            AllFilesInfo info = infoList.get(i);
-            map.put("file_title", info.getTitle());
+            FolderInfo info = infoList.get(i);
+            map.put("name", info.getName());
             map.put("path", info.getPath());
             map.put("icon", info.getIcon());
-            list.add(map);
+            fileList.add(map);
         }
 
-        return list;
-    }
-
-    private List<Map<String, Object>> getPicturesList() {
-
-        List<Map<String, Object>> list = new ArrayList<>();
-        Map<String, Object> map;
-        List<AllFilesInfo> infoList = new ArrayList<>();
-        Uri uri = Uri.fromFile(new File("/sdcard"));
-        String mDir = uri.getPath();
-
-        Log.v(TAG, "data");
-
-        getFiles(mDir, "picture", infoList);
-
-        for (int i = 0; i < infoList.size(); i++) {
-            map = new HashMap<>();
-            AllFilesInfo info = infoList.get(i);
-            map.put("file_title", info.getTitle());
-            map.put("path", info.getPath());
-            map.put("icon", info.getIcon());
-            list.add(map);
-        }
-
-        return list;
     }
 }
 
 class FolderInfo {
     private String name;
+    private String path;
     private int icon;
 
-    public FolderInfo(String name, int icon) {
+    public FolderInfo(String name, String path, int icon) {
         setName(name);
         setIcon(icon);
+        setPath(path);
     }
 
     public void setName(String name) {
@@ -202,32 +105,6 @@ class FolderInfo {
     }
     public String getName() {
         return name;
-    }
-
-    public void setIcon(int icon) {
-        this.icon = icon;
-    }
-    public int getIcon() {
-        return icon;
-    }
-}
-
-class AllFilesInfo {
-    private String title;
-    private String path;
-    private int icon;
-
-    public AllFilesInfo(String title, String path, int icon) {
-        setTitle(title);
-        setPath(path);
-        setIcon(icon);
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public String getTitle() {
-        return title;
     }
 
     public void setPath(String path) {
@@ -244,4 +121,3 @@ class AllFilesInfo {
         return icon;
     }
 }
-

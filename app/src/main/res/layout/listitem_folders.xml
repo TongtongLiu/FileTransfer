@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/listitem_friends"
+    android:id="@+id/listitem_folders"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -30,10 +30,15 @@
             android:id="@+id/text_folders_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_gravity="center_vertical">
+            android:textSize="18sp" >
+        </TextView>
+
+        <TextView
+            android:id="@+id/text_folders_path"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp" >
         </TextView>
 
     </LinearLayout>
-
 </LinearLayout>
