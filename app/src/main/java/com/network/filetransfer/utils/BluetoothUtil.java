@@ -78,28 +78,7 @@ public class BluetoothUtil {
         adapter.startDiscovery();
     }
 
-    private void queryPairedDevice() {
-        Set<BluetoothDevice> pairedDevices = adapter.getBondedDevices();
-        // If there are paired devices
-        if (pairedDevices.size() > 0) {
-            // Loop through paired devices
-            for (BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("name", device.getName());
-                    jsonObject.put("addr", device.getAddress());
-                    Message message = new Message();
-                    message.what = MainActivity.MainHandler.bluetooth_search;
-                    message.obj = jsonObject;
-                    handler.sendMessage(message);
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
 
     public void destroy() {
         context.unregisterReceiver(mReceiver);
@@ -132,9 +111,9 @@ public class BluetoothUtil {
         }
 
         public void run() {
-            BluetoothSocket socket = null;
             // Keep listening until exception occurs or a socket is returned
             while (true) {
+                BluetoothSocket socket = null;
                 try {
                     socket = mmServerSocket.accept();
                 } catch (IOException e) {
@@ -145,12 +124,6 @@ public class BluetoothUtil {
                     // Do work to manage the connection (in a separate thread)
                     BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket);
                     bluetoothReceiveFile.start();
-                    try {
-                        mmServerSocket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
                 }
             }
         }
