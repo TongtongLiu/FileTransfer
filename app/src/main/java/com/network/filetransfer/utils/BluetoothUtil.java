@@ -249,7 +249,6 @@ public class BluetoothUtil {
                 }
                 mmOutStream.flush();
                 filein.close();
-                mmSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -307,7 +306,7 @@ public class BluetoothUtil {
                 for (int i = 0;i < read;i ++) {
                     sizeBuffer[i] = buffer[i];
                 }
-                fileSize = Long.parseLong(new String(nameBuffer));
+                fileSize = Long.parseLong(new String(sizeBuffer));
                 tranferredSize = 0;
                 updateUI(deviceName, fileName, fileSize, tranferredSize);
                 // Read File Content
