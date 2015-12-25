@@ -102,7 +102,6 @@ public class BluetoothUtil {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("name", file);
             jsonObject.put("origin", device.getName());
-            jsonObject.put("time", new Date());
             jsonObject.put("type", "Bluetooth");
             Message message = new Message();
             message.what = MainHandler.bluetooth_sendfile;
@@ -234,16 +233,12 @@ public class BluetoothUtil {
         public void run() {
             try {
                 // Send File Name
-                byte[] nameBuffer = new byte[4096];
                 byte[] fileName = mmfile.getName().getBytes();
-                for (int i = 0;i < fileName.length;i ++) {
-                    nameBuffer[i] = fileName[i];
-                }
-                mmOutStream.write(nameBuffer);
+                mmOutStream.write(fileName);
                 mmOutStream.flush();
                 // Send File Content
                 FileInputStream filein = new FileInputStream(mmfile);
-                DataInputStream fileInput = new DataInputStream(new BufferedInputStream(filein));
+                InputStream fileInput = new BufferedInputStream(filein);
                 byte[] buffer = new byte[4096];
                 int read = 0;
                 while ((read = fileInput.read(buffer)) != -1)
@@ -301,10 +296,9 @@ public class BluetoothUtil {
                 }
                 String fileName = new String(nameBuffer);
                 String path = Uri.fromFile(new File("/sdcard")).getPath() + File.separator + "Download";
-                String filePath = path + File.separator + fileName;
                 file = new File(path, fileName);
-                file.createNewFile();
-                DataOutputStream fileOutput = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(new File(filePath))));
+                System.out.println(file.getPath());
+                OutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file));
                 while ((read = mmInStream.read(buffer)) != -1)
                 {
                     fileOutput.write(buffer, 0, read);
@@ -315,10 +309,15 @@ public class BluetoothUtil {
             }
             catch (IOException e) {
                 e.printStackTrace();
+                try {
+                    mmSocket.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
             try {
                 JSONObject jsonObject = new JSONObject();
-                jsonObject.put("name", file);
+                jsonObject.put("name", file.getName());
                 jsonObject.put("origin", device.getName());
                 jsonObject.put("time", new Date());
                 jsonObject.put("type", "Bluetooth");

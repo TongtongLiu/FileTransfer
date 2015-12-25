@@ -15,6 +15,7 @@ public class MainHandler extends Handler {
     public final static int broadcast = 0x1;
     public final static int bluetooth_search = 0x2;
     public final static int bluetooth_sendfile = 0x3;
+    public final static int bluetooth_receivefile = 0x4;
     public final static int transfer_send = 0x5;
     public final static int transfer_receive = 0x6;
 
@@ -52,9 +53,9 @@ public class MainHandler extends Handler {
                 break;
 
             case bluetooth_sendfile:
+            case bluetooth_receivefile:
                 homeFragment.addTransfer((JSONObject) message.obj);
                 break;
-
             case transfer_send:
             case transfer_receive:
                 homeFragment.addTransfer((JSONObject) message.obj);
