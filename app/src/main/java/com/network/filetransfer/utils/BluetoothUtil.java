@@ -98,19 +98,6 @@ public class BluetoothUtil {
         BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
         ConnectThread connectThread = new ConnectThread(device, file);
         connectThread.start();
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("name", file);
-            jsonObject.put("origin", device.getName());
-            jsonObject.put("type", "Bluetooth");
-            Message message = new Message();
-            message.what = MainHandler.bluetooth_sendfile;
-            message.obj = jsonObject;
-            handler.sendMessage(message);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private class AcceptThread extends Thread {
@@ -216,6 +203,10 @@ public class BluetoothUtil {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private final File mmfile;
+        private long fileSize;
+        private long transferredSize;
+        private String deviceName;
+        private String fileName;
 
         public BluetoothSendFile(BluetoothSocket socket, String file) {
             mmSocket = socket;
@@ -228,14 +219,21 @@ public class BluetoothUtil {
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
             mmfile = new File(file);
+            deviceName = socket.getRemoteDevice().getName();
         }
 
         public void run() {
             try {
                 // Send File Name
-                byte[] fileName = mmfile.getName().getBytes();
-                mmOutStream.write(fileName);
+                byte[] fileNameBytes = mmfile.getName().getBytes();
+                mmOutStream.write(fileNameBytes);
                 mmOutStream.flush();
+                // Send File Size
+                fileSize = mmfile.length();
+                byte[] fileSizeBytes = ("" + fileSize).getBytes();
+                mmOutStream.write(fileSizeBytes);
+                mmOutStream.flush();
+                updateUI(deviceName, fileName, fileSize, transferredSize);
                 // Send File Content
                 FileInputStream filein = new FileInputStream(mmfile);
                 InputStream fileInput = new BufferedInputStream(filein);
@@ -244,6 +242,8 @@ public class BluetoothUtil {
                 while ((read = fileInput.read(buffer)) != -1)
                 {
                     mmOutStream.write(buffer, 0, read);
+                    transferredSize += read;
+                    updateUI(deviceName, fileName, fileSize, transferredSize);
                 }
                 mmOutStream.flush();
                 fileInput.close();
@@ -266,6 +266,9 @@ public class BluetoothUtil {
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private File file;
+        private String fileName;
+        private long fileSize;
+        private long tranferredSize;
         private BluetoothDevice device;
 
         public BluetoothReceiveFile(BluetoothSocket socket, BluetoothDevice device) {
@@ -289,12 +292,23 @@ public class BluetoothUtil {
             byte[] buffer = new byte[4096];
             int read = 0;
             try {
+                // Read File name
                 read = mmInStream.read(buffer);
                 byte[] nameBuffer = new byte[read];
                 for (int i = 0;i < read;i ++) {
                     nameBuffer[i] = buffer[i];
                 }
-                String fileName = new String(nameBuffer);
+                fileName = new String(nameBuffer);
+                // Read File Size
+                read = mmInStream.read(buffer);
+                byte[] sizeBuffer = new byte[read];
+                for (int i = 0;i < read;i ++) {
+                    sizeBuffer[i] = buffer[i];
+                }
+                fileSize = Long.parseLong(new String(nameBuffer));
+                tranferredSize = 0;
+                updateUI(device.getName(), fileName, fileSize, tranferredSize);
+                // Read File Content
                 String path = Uri.fromFile(new File("/sdcard")).getPath() + File.separator + "Download";
                 file = new File(path, fileName);
                 System.out.println(file.getPath());
@@ -302,6 +316,8 @@ public class BluetoothUtil {
                 while ((read = mmInStream.read(buffer)) != -1)
                 {
                     fileOutput.write(buffer, 0, read);
+                    tranferredSize += read;
+                    updateUI(device.getName(), fileName, fileSize, tranferredSize);
                 }
                 fileOutput.flush();
                 fileOutput.close();
@@ -315,19 +331,6 @@ public class BluetoothUtil {
                     e1.printStackTrace();
                 }
             }
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("name", file.getName());
-                jsonObject.put("origin", device.getName());
-                jsonObject.put("time", new Date());
-                jsonObject.put("type", "Bluetooth");
-                Message message = new Message();
-                message.what = MainHandler.bluetooth_sendfile;
-                message.obj = jsonObject;
-                handler.sendMessage(message);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             openServer();
         }
 
@@ -336,6 +339,22 @@ public class BluetoothUtil {
             try {
                 mmSocket.close();
             } catch (IOException e) { }
+        }
+    }
+
+    private void updateUI(String name, String file, long size, long transferedSize) {
+        try {
+            JSONObject json = new JSONObject();
+            json.put("origin", name);
+            json.put("name", file);
+            json.put("size", size);
+            json.put("transferedSize", transferedSize);
+            Message message = new Message();
+            message.what = MainHandler.bluetooth_receivefile;
+            message.obj = json;
+            handler.sendMessage(message);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
