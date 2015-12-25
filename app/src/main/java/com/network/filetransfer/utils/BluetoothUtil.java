@@ -202,11 +202,12 @@ public class BluetoothUtil {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-        private final File mmfile;
         private long fileSize;
         private long transferredSize;
         private String deviceName;
         private String fileName;
+        private String filePath;
+        int BUFFERSIZE = 81920;
 
         public BluetoothSendFile(BluetoothSocket socket, String file) {
             mmSocket = socket;
@@ -218,35 +219,36 @@ public class BluetoothUtil {
             } catch (IOException e) { }
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
-            mmfile = new File(file);
+            File f = new File(file);
             deviceName = socket.getRemoteDevice().getName();
+            fileName = f.getName();
+            fileSize = f.length();
+            filePath = file;
         }
 
         public void run() {
             try {
                 // Send File Name
-                byte[] fileNameBytes = mmfile.getName().getBytes();
+                byte[] fileNameBytes = fileName.getBytes();
                 mmOutStream.write(fileNameBytes);
                 mmOutStream.flush();
                 // Send File Size
-                fileSize = mmfile.length();
                 byte[] fileSizeBytes = ("" + fileSize).getBytes();
                 mmOutStream.write(fileSizeBytes);
                 mmOutStream.flush();
                 updateUI(deviceName, fileName, fileSize, transferredSize);
                 // Send File Content
-                FileInputStream filein = new FileInputStream(mmfile);
-                InputStream fileInput = new BufferedInputStream(filein);
+                InputStream filein = new BufferedInputStream(new FileInputStream(filePath), BUFFERSIZE);
                 byte[] buffer = new byte[4096];
                 int read = 0;
-                while ((read = fileInput.read(buffer)) != -1)
+                while ((read = filein.read(buffer)) != -1)
                 {
                     mmOutStream.write(buffer, 0, read);
                     transferredSize += read;
                     updateUI(deviceName, fileName, fileSize, transferredSize);
                 }
                 mmOutStream.flush();
-                fileInput.close();
+                filein.close();
                 mmSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -265,15 +267,14 @@ public class BluetoothUtil {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
-        private File file;
         private String fileName;
         private long fileSize;
         private long tranferredSize;
-        private BluetoothDevice device;
+        private String deviceName;
+        int BUFFERSIZE = 81920;
 
         public BluetoothReceiveFile(BluetoothSocket socket, BluetoothDevice device) {
             mmSocket = socket;
-            this.device = device;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
@@ -286,6 +287,7 @@ public class BluetoothUtil {
 
             mmInStream = tmpIn;
             mmOutStream = tmpOut;
+            deviceName = device.getName();
         }
 
         public void run() {
@@ -307,20 +309,20 @@ public class BluetoothUtil {
                 }
                 fileSize = Long.parseLong(new String(nameBuffer));
                 tranferredSize = 0;
-                updateUI(device.getName(), fileName, fileSize, tranferredSize);
+                updateUI(deviceName, fileName, fileSize, tranferredSize);
                 // Read File Content
                 String path = Uri.fromFile(new File("/sdcard")).getPath() + File.separator + "Download";
-                file = new File(path, fileName);
-                System.out.println(file.getPath());
-                OutputStream fileOutput = new BufferedOutputStream(new FileOutputStream(file));
+                File f = new File(path, fileName);
+                System.out.println(f.getPath());
+                OutputStream fileout = new BufferedOutputStream(new FileOutputStream(f), 81920);
                 while ((read = mmInStream.read(buffer)) != -1)
                 {
-                    fileOutput.write(buffer, 0, read);
+                    fileout.write(buffer, 0, read);
                     tranferredSize += read;
-                    updateUI(device.getName(), fileName, fileSize, tranferredSize);
+                    updateUI(deviceName, fileName, fileSize, tranferredSize);
                 }
-                fileOutput.flush();
-                fileOutput.close();
+                fileout.flush();
+                fileout.close();
                 mmSocket.close();
             }
             catch (IOException e) {
