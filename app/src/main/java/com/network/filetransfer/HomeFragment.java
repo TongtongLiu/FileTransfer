@@ -33,7 +33,7 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
+        adapter = new SimpleAdapter(this.getActivity(), getTransferList(), R.layout.listitem_home, from, to);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class HomeFragment extends ListFragment {
 //    }
 
     private boolean anyTransfer() {
-        return false;
+        return true;
     }
 
     private List<Map<String, Object>> getTransferList() {
@@ -104,8 +104,8 @@ public class HomeFragment extends ListFragment {
         List<TransferInfo> infoList = new ArrayList<>();
 
         Log.v(TAG, "getTransferList");
-        infoList.add(new TransferInfo("test.png", "MacBook", new Date(), R.mipmap.ic_png));
-        infoList.add(new TransferInfo("test.doc", "iPhone", new Date(), R.mipmap.ic_other));
+        infoList.add(new TransferInfo("test.png", "ME-MiPhone", new Date(), R.mipmap.ic_png));
+        infoList.add(new TransferInfo("test.doc", "Nexus CLY", new Date(), R.mipmap.ic_other));
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();

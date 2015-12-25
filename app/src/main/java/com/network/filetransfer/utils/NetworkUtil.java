@@ -30,8 +30,16 @@ public class NetworkUtil {
     }
 
     public boolean isWiFiConnected() {
-        NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-        return (info != null && info.getType() == ConnectivityManager.TYPE_WIFI);
+        //NetworkInfo info = connectivityManager.getActiveNetworkInfo();
+        //return (info != null && info.getType() == ConnectivityManager.TYPE_WIFI);
+
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        int ipAddress = wifiInfo == null ? 0 : wifiInfo.getIpAddress();
+        if (wifiManager.isWifiEnabled() && ipAddress != 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public boolean isMobileConnected() {

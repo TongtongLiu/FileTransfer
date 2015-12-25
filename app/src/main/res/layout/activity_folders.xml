@@ -10,7 +10,7 @@
         android:background="@color/action_bar" >
 
         <Button
-            android:id="@+id/folders_button_back"
+            android:id="@+id/button_back"
             android:layout_width="@dimen/action_bar_button_size"
             android:layout_height="@dimen/action_bar_button_size"
             android:layout_marginLeft="@dimen/action_bar_margin"
@@ -25,8 +25,8 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/action_bar_margin"
             android:layout_marginStart="@dimen/action_bar_margin"
-            android:layout_toRightOf="@id/folders_button_back"
-            android:layout_toEndOf="@id/folders_button_back"
+            android:layout_toRightOf="@id/button_back"
+            android:layout_toEndOf="@id/button_back"
             android:text="@string/activity_folders"
             android:textColor="@color/foreground"
             android:textSize="18sp" />
@@ -41,7 +41,7 @@
         android:layout_weight="1" />
 
     <Button
-        android:id="@+id/folders_button_send"
+        android:id="@+id/button_send"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_send_height"
         android:text="@string/button_send"

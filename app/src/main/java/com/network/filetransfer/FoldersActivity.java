@@ -11,14 +11,13 @@ public class FoldersActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Button backButton = (Button) findViewById(R.id.folders_button_back);
-        Button sendButton = (Button) findViewById(R.id.folders_button_send);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_folders);
+
+        Button backButton = (Button) findViewById(R.id.button_back);
+        Button sendButton = (Button) findViewById(R.id.button_send);
         type = getIntent().getStringExtra("type");
         addr = getIntent().getStringExtra("addr");
-
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());
     }

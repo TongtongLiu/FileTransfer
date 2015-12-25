@@ -1,10 +1,8 @@
 package com.network.filetransfer;
 
-import android.app.Activity;
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -25,10 +23,6 @@ import com.network.filetransfer.utils.NetworkUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,30 +63,32 @@ public class FriendsFragment extends ListFragment {
         return view;
     }
 
-    public void onListItemClick(ListView parent, View view, int postion, long id) {
-
+    public void onListItemClick(ListView parent, View view, int position, long id) {
         String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
-        // for file transport test
-        /*Intent intent = new Intent(getActivity(), FoldersActivity.class);
-        intent.putExtra("type", type);
-        intent.putExtra("addr", addr);
-        startActivity(intent);*/
-
-        if (type == "Bluetooth") {
-            Uri uri = Uri.fromFile(new File("/sdcard"));
-            String mDir = uri.getPath() + "/DCIM/Camera";
-            File[] files = new File(mDir).listFiles();
-            int i;
-            for (i = 0;i < files.length;i ++) {
-                if (files[i].isFile()) {
-                    break;
-                }
-            }
-            bluetoothUtil.sendFile(addr, files[i]);
-            //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
+        if (getActivity().findViewById(R.id.button_send) == null) {
+            Intent intent = new Intent(getActivity(), FoldersActivity.class);
+            intent.putExtra("type", type);
+            intent.putExtra("addr", addr);
+            startActivity(intent);
         }
+        else {
+            parent.setSelection(position);
+        }
+
+        //Toast.makeText(getActivity(), "You are selecting " + position, Toast.LENGTH_SHORT).show();
+        //ListView listView = (ListView)parent;
+        //HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(position);
+        //// TODO: if bluetooth friend, pair each other first.
+        //if (map.containsKey("type")) {
+        //    String type = map.get("type").toString();
+        //    if (type == "Bluetooth") {
+        //        String MAC_addr = map.get("addr").toString();
+        //        bluetoothUtil.connectToServer(MAC_addr);
+        //        //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
+        //    }
+        //}
         // TODO: if the bluetooth friend has been paired, redirect to FoldFragment.
     }
 
@@ -121,7 +117,9 @@ public class FriendsFragment extends ListFragment {
                     Log.v(TAG, "onRefresh");
                     listviewLayout.setRefreshing(true);
                     friendList.clear();
-                    searchFriends();
+                    if (networkUtil.isWiFiConnected()) {
+                        searchFriends();
+                    }
                     adapter.notifyDataSetChanged();
                     listviewLayout.setRefreshing(false);
                 }
@@ -152,7 +150,9 @@ public class FriendsFragment extends ListFragment {
                 connectionLayout.setVisibility(View.GONE);
                 this.setListAdapter(adapter);
                 listviewLayout.setVisibility(View.VISIBLE);
-                searchFriends();
+                if (networkUtil.isWiFiConnected()) {
+                    searchFriends();
+                }
             }
         }
     }
