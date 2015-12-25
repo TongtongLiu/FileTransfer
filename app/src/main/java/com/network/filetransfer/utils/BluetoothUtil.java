@@ -109,7 +109,7 @@ public class BluetoothUtil {
 
     public void sendFile(String MAC_addr, File f) {
         BluetoothDevice device = adapter.getRemoteDevice(MAC_addr);
-        ConnectThread connectThread = new ConnectThread(device);
+        ConnectThread connectThread = new ConnectThread(device, f);
         connectThread.start();
     }
 
@@ -141,7 +141,8 @@ public class BluetoothUtil {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket);
+                    File file = new File;
+                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket, file);
                     bluetoothReceiveFile.start();
                     try {
                         mmServerSocket.close();
@@ -164,12 +165,14 @@ public class BluetoothUtil {
     private class ConnectThread extends Thread {
         private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private File file;
 
-        public ConnectThread(BluetoothDevice device) {
+        public ConnectThread(BluetoothDevice device, File f) {
             // Use a temporary object that is later assigned to mmSocket,
             // because mmSocket is final
             BluetoothSocket tmp = null;
             mmDevice = device;
+            file = f;
 
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
@@ -197,7 +200,6 @@ public class BluetoothUtil {
             }
 
             // Do work to manage the connection (in a separate thread)
-            File file = new File("1.txt");
             BluetoothSendFile bluetoothSendFile = new BluetoothSendFile(mmSocket, file);
             bluetoothSendFile.start();
         }
@@ -286,11 +288,13 @@ public class BluetoothUtil {
         private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
+        private File file;
 
-        public BluetoothReceiveFile(BluetoothSocket socket) {
+        public BluetoothReceiveFile(BluetoothSocket socket, File file) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
+            this.file = file;
 
             // Get the input and output streams, using temp objects because
             // member streams are final
