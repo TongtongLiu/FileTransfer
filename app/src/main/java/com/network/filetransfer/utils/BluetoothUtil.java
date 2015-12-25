@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -299,7 +300,7 @@ public class BluetoothUtil {
                     nameBuffer[i] = buffer[i];
                 }
                 String fileName = new String(nameBuffer);
-                String path = context.getExternalFilesDir(null).toString();
+                String path = Uri.fromFile(new File("/sdcard")).getPath() + File.separator + "Download";
                 String filePath = path + File.separator + fileName;
                 file = new File(path, fileName);
                 file.createNewFile();
