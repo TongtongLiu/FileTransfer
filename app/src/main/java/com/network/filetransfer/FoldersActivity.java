@@ -1,15 +1,16 @@
 package com.network.filetransfer;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 
-import java.util.HashMap;
+import com.network.filetransfer.utils.TransferClient;
 
 public class FoldersActivity extends Activity {
+    private static final String TAG = "FoldersActivity";
+
     private String type;
     private String addr;
     private String name;
@@ -49,10 +50,16 @@ public class FoldersActivity extends Activity {
                 MainActivity.bluetoothUtil.sendFile(addr, file);
             }
             else {
-
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "TransferClient Start");
+                        TransferClient client = new TransferClient(addr, name, file, MainActivity.mainHandler);
+                        client.run();
+                    }
+                }).start();
             }
-            Intent intent = new Intent(FoldersActivity.this,MainActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
 }

@@ -140,7 +140,7 @@ public class HomeFragment extends ListFragment {
                     cmpmap.get("origin").equals(map.get("origin")) &&
                     cmpmap.get("size").equals(map.get("size"))) {
                 Log.v(TAG, "An Existed Transfer");
-                cmpmap.put("transferedSize", map.get("transferedSize"));
+                transferList.get(i).put("transferedSize", map.get("transferedSize"));
                 isExist = true;
                 break;
             }
@@ -150,6 +150,16 @@ public class HomeFragment extends ListFragment {
             transferList.add(map);
         }
         adapter.notifyDataSetChanged();
+        if (this.getListAdapter() == null) {
+            this.setListAdapter(adapter);
+            View view = getView();
+            if (view != null) {
+                LinearLayout transferLayout = (LinearLayout) getView().findViewById(R.id.layout_home_disabled);
+                PullRefreshLayout listviewLayout = (PullRefreshLayout) getView().findViewById(R.id.listview_home);
+                transferLayout.setVisibility(View.GONE);
+                listviewLayout.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
 }
@@ -182,7 +192,7 @@ class TransferInfo {
             if (json.has("name")) { setName(json.getString("name")); }
             if (json.has("origin")) { setOrigin(json.getString("origin")); }
             if (json.has("size")) { setSize(json.getLong("size")); }
-            if (json.has("transferedSize")) { setSize(json.getLong("transferedSize")); }
+            if (json.has("transferedSize")) { setTransferedSize(json.getLong("transferedSize")); }
             time = System.currentTimeMillis();
             icon = R.mipmap.ic_other;
         } catch (JSONException e) {

@@ -1,6 +1,5 @@
 package com.network.filetransfer.utils;
 
-import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -86,11 +85,11 @@ public class TransferServerThread implements Runnable {
             long size = Long.parseLong(receive());
             updateUI(name, file, size, 0);
 
-            String saved_file = Uri.fromFile(new File("/sdcard")).getPath() + File.separator + "Download" + File.separator + file;
+            String saved_file = Environment.getExternalStorageDirectory().getPath() + File.separator + "Download" + File.separator + file;
             Log.v(TAG, saved_file);
 
             InputStream filein = new DataInputStream(new BufferedInputStream(server.getInputStream()));
-            OutputStream fileout = new BufferedOutputStream(new FileOutputStream(file));
+            OutputStream fileout = new BufferedOutputStream(new FileOutputStream(saved_file));
             byte[] buffer = new byte[TransferClient.CACHE];
             int count = filein.read(buffer, 0, TransferClient.CACHE);
             int total = 0;

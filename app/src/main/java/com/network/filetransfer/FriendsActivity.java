@@ -64,6 +64,7 @@ public class FriendsActivity extends Activity {
             else {
 
             }
+            finish();
         }
     }
 }
