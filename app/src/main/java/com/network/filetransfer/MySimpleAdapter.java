@@ -17,12 +17,14 @@ public class MySimpleAdapter extends SimpleAdapter {
         super(context, data, resource, from, to);
     }
 
-    public void setSelectedItem(int selectItem) {
+    public boolean setSelectedItem(int selectItem) {
         if (this.selectItem == selectItem) {
             this.selectItem = -1;
+            return false;
         }
         else {
             this.selectItem = selectItem;
+            return true;
         }
     }
 

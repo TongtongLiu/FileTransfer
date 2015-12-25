@@ -18,6 +18,7 @@ public class FriendsActivity extends Activity {
 
         Button backButton = (Button) findViewById(R.id.button_back);
         Button sendButton = (Button) findViewById(R.id.button_send);
+        sendButton.setEnabled(false);
         file = getIntent().getStringExtra("file");
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());

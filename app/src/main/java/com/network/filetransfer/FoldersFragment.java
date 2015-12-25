@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
@@ -49,21 +50,33 @@ public class FoldersFragment extends ListFragment {
         HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(position);
         file = map.get("path").toString();
         File f = new File(file);
+        Button send_button = (Button) getActivity().findViewById(R.id.button_send);
+
         if (f.isDirectory()) {
+            if (send_button != null) {
+                send_button.setEnabled(false);
+            }
             getFoldersList(f.getPath(), fileList);
             adapter.clearSelectedItem();
             file = "";
             adapter.notifyDataSetChanged();
         }
         else {
-            if (getActivity().findViewById(R.id.button_send) == null) {
+            if (send_button == null) {
                 Intent intent = new Intent(getActivity(), FriendsActivity.class);
                 intent.putExtra("file", file);
                 startActivity(intent);
             }
             else {
-                adapter.setSelectedItem(position);
+                boolean isSelected = adapter.setSelectedItem(position);
                 adapter.notifyDataSetInvalidated();
+                if (isSelected) {
+                    send_button.setEnabled(true);
+                }
+                else {
+                    send_button.setEnabled(false);
+                    file = "";
+                }
             }
         }
     }

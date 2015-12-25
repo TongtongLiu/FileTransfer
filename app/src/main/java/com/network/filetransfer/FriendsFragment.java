@@ -72,18 +72,27 @@ public class FriendsFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView parent, View view, int position, long id) {
+        Button send_button = (Button) getActivity().findViewById(R.id.button_send);
         type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
-        if (getActivity().findViewById(R.id.button_send) == null) {
+        if (send_button == null) {
             Intent intent = new Intent(getActivity(), FoldersActivity.class);
             intent.putExtra("type", type);
             intent.putExtra("addr", addr);
             startActivity(intent);
         }
         else {
-            adapter.setSelectedItem(position);
+            boolean isSelected = adapter.setSelectedItem(position);
             adapter.notifyDataSetInvalidated();
+            if (isSelected) {
+                send_button.setEnabled(true);
+            }
+            else {
+                send_button.setEnabled(false);
+                type = "";
+                addr = "";
+            }
         }
     }
 
