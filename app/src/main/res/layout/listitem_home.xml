@@ -42,7 +42,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/listview_padding"
                     android:layout_marginEnd="@dimen/listview_padding"
-                    android:textSize="12sp" >
+                    android:textSize="12sp"
+                    android:singleLine="true"
+                    android:ellipsize="end">
                 </TextView>
 
                 <TextView
@@ -51,7 +53,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:textSize="12sp" >
+                    android:textSize="12sp"
+                    android:singleLine="true"
+                    android:ellipsize="end">
                 </TextView>
 
             </RelativeLayout>

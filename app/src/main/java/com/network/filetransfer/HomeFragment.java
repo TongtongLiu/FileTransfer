@@ -7,7 +7,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -41,6 +43,8 @@ public class HomeFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container,false);
         Log.v(TAG, "OnCreateView");
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (getView() == null) {
             initFragment(view);
         }

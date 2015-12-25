@@ -30,14 +30,18 @@
             android:id="@+id/text_friends_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp">
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:ellipsize="end">
         </TextView>
 
         <TextView
             android:id="@+id/text_friends_addr"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="12sp" >
+            android:textSize="12sp"
+            android:singleLine="true"
+            android:ellipsize="end">
         </TextView>
 
         <TextView
@@ -48,4 +52,15 @@
         </TextView>
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_friends_selected"
+        android:layout_width="@dimen/listview_image_size"
+        android:layout_height="@dimen/listview_image_size"
+        android:layout_gravity="center"
+        android:maxHeight="@dimen/listview_image_size"
+        android:maxWidth="@dimen/listview_image_size"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_selected"
+        android:visibility="invisible"/>
 </LinearLayout>

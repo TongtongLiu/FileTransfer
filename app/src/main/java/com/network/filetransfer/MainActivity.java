@@ -55,6 +55,7 @@ public class MainActivity extends Activity {
     private MyOnClick myclick;
     private MyPageChangeListener myPageChange;
 
+    public static MainHandler mainHandler;
     public static BluetoothUtil bluetoothUtil;
 
     @Override
@@ -117,38 +118,6 @@ public class MainActivity extends Activity {
         viewPager.setCurrentItem(0);
     }
 
-    public static class MainHandler extends Handler {
-        public final static int broadcast = 0x1;
-        public final static int bluetooth_search = 0x2;
-
-        private final WeakReference<MainActivity> mActivity;
-        private MyFragmentPagerAdapter adapter;
-
-        public MainHandler(MainActivity activity, MyFragmentPagerAdapter adapter) {
-            mActivity = new WeakReference<>(activity);
-            this.adapter = adapter;
-        }
-
-        @Override
-        public void handleMessage(Message message) {
-            // TODO: handle message from server thread
-            Log.v(TAG, "" + message.what);
-            Log.v(TAG, message.obj.toString());
-            switch (message.what) {
-                case broadcast:
-                    FriendsFragment fragment = (FriendsFragment) adapter.getItem(2);
-                    fragment.addFriend((JSONObject) message.obj);
-                    break;
-                case bluetooth_search:
-                    FriendsFragment b_fragment = (FriendsFragment) adapter.getItem(2);
-                    b_fragment.addFriend((JSONObject)message.obj);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     class BServer implements Runnable {
         private Context context;
         private Handler handler;
@@ -182,17 +151,17 @@ public class MainActivity extends Activity {
     }
 
     private void initServers() {
-        MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
+        mainHandler = new MainHandler(this);
+        mainHandler.addFriendsFragment((FriendsFragment) fragmentPagerAdapter.getItem(2));
         Log.v(TAG, "BroadcastServer Start");
-        new Thread(new BServer(this, handler)).start();
+        new Thread(new BServer(this, mainHandler)).start();
         Log.v(TAG, "TransferServer Start");
-        new Thread(new TServer(this, handler)).start();
+        new Thread(new TServer(this, mainHandler)).start();
     }
 
     private void initBluetoothUtil() {
-        MainHandler handler = new MainHandler(this, fragmentPagerAdapter);
         Log.v(TAG, "BlueToothUtil Init");
-        bluetoothUtil = new BluetoothUtil(this, handler);
+        bluetoothUtil = new BluetoothUtil(this, mainHandler);
         if (bluetoothUtil.isBluetoothEnabled()) {
             bluetoothUtil.openServer();
         }

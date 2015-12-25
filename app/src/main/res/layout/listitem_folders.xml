@@ -30,7 +30,10 @@
             android:id="@+id/text_folders_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp" >
+            android:textSize="18sp"
+            android:layout_gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="end" >
         </TextView>
 
         <TextView
@@ -41,4 +44,15 @@
         </TextView>
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_folders_selected"
+        android:layout_width="@dimen/listview_image_size"
+        android:layout_height="@dimen/listview_image_size"
+        android:layout_gravity="center"
+        android:maxHeight="@dimen/listview_image_size"
+        android:maxWidth="@dimen/listview_image_size"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/ic_selected"
+        android:visibility="invisible"/>
 </LinearLayout>

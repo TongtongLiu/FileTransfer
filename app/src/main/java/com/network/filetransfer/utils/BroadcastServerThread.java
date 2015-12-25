@@ -6,6 +6,7 @@ import android.os.Message;
 import android.util.Log;
 
 import com.network.filetransfer.MainActivity;
+import com.network.filetransfer.MainHandler;
 
 import org.json.JSONObject;
 
@@ -53,7 +54,7 @@ public class BroadcastServerThread implements Runnable {
         String messageStr = new String(packet.getData(), packet.getOffset(), packet.getLength());
         JSONObject info = BroadcastMessage.parseJsonString(messageStr);
         Message message = new Message();
-        message.what = MainActivity.MainHandler.broadcast;
+        message.what = MainHandler.broadcast;
         message.obj = info;
         handler.sendMessage(message);
     }

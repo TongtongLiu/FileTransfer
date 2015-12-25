@@ -3,14 +3,15 @@ package com.network.filetransfer;
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -24,7 +25,6 @@ import com.network.filetransfer.utils.NetworkUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,8 +38,10 @@ public class FriendsFragment extends ListFragment {
 
     static final String[] from = new String[] {"name", "addr", "icon", "type"};
     static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon, R.id.text_friends_type};
-    private List<Map<String, Object>> friendList;
+    private static List<Map<String, Object>> friendList;
     private SimpleAdapter adapter;
+    private int oldPosition = -1;
+
     private int REQUEST_DISCOVERALBLE_BT = 1;
 
     @Override
@@ -50,7 +52,9 @@ public class FriendsFragment extends ListFragment {
         networkUtil = new NetworkUtil(getActivity());
         bluetoothUtil = MainActivity.bluetoothUtil;
 
-        friendList = new ArrayList<>();
+        if (friendList == null) {
+            friendList = new ArrayList<>();
+        }
         adapter = new SimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
     }
 
@@ -59,6 +63,8 @@ public class FriendsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_friends, container, false);
         Log.v(TAG, "OnCreateView");
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
         if (getView() == null) {
             initFragment(view);
         }
@@ -69,27 +75,27 @@ public class FriendsFragment extends ListFragment {
         String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
-        /*if (getActivity().findViewById(R.id.button_send) == null) {
+        if (getActivity().findViewById(R.id.button_send) == null) {
             Intent intent = new Intent(getActivity(), FoldersActivity.class);
             intent.putExtra("type", type);
             intent.putExtra("addr", addr);
             startActivity(intent);
         }
         else {
-            parent.setSelection(position);
-        }*/
-
-        if (type == "Bluetooth") {
-            Uri uri = Uri.fromFile(new File("/sdcard"));
-            String mDir = uri.getPath() + "/DCIM/Camera";
-            File[] files = new File(mDir).listFiles();
-            int i;
-            for (i = 0; i < files.length; i++) {
-                if (files[i].isFile()) {
-                    break;
-                }
+            ImageView imageView;
+            if (oldPosition >= 0) {
+                View itemView = parent.getChildAt(oldPosition);
+                imageView = (ImageView) itemView.findViewById(R.id.image_friends_selected);
+                imageView.setVisibility(View.INVISIBLE);
             }
-            bluetoothUtil.sendFile(addr, files[i]);
+            if (oldPosition != position) {
+                imageView = (ImageView) view.findViewById(R.id.image_friends_selected);
+                imageView.setVisibility(View.VISIBLE);
+                oldPosition = position;
+            }
+            else {
+                oldPosition = -1;
+            }
         }
     }
 

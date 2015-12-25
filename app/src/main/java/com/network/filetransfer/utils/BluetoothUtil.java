@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.network.filetransfer.MainActivity;
+import com.network.filetransfer.MainHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class BluetoothUtil {
                     jsonObject.put("addr", device.getAddress());
                     jsonObject.put("type", "Bluetooth");
                     Message message = new Message();
-                    message.what = MainActivity.MainHandler.bluetooth_search;
+                    message.what = MainHandler.bluetooth_search;
                     message.obj = jsonObject;
                     handler.sendMessage(message);
                 } catch (JSONException e) {
@@ -90,7 +91,7 @@ public class BluetoothUtil {
                     jsonObject.put("name", device.getName());
                     jsonObject.put("addr", device.getAddress());
                     Message message = new Message();
-                    message.what = MainActivity.MainHandler.bluetooth_search;
+                    message.what = MainHandler.bluetooth_search;
                     message.obj = jsonObject;
                     handler.sendMessage(message);
 
