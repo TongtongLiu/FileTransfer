@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class FriendsActivity extends Activity {
+    private String type;
+    private String addr;
     private String file;
     private FriendsFragment fragment;
 
@@ -16,6 +18,7 @@ public class FriendsActivity extends Activity {
 
         Button backButton = (Button) findViewById(R.id.button_back);
         Button sendButton = (Button) findViewById(R.id.button_send);
+        sendButton.setEnabled(false);
         file = getIntent().getStringExtra("file");
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());
@@ -39,7 +42,9 @@ public class FriendsActivity extends Activity {
 
     class SendClickListener implements View.OnClickListener {
         public void onClick(View v) {
-
+            type = fragment.type;
+            addr = fragment.addr;
+            // TODO send type addr file
         }
     }
 }

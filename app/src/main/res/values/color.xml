@@ -4,5 +4,6 @@
     <color name="foreground">#FFFFFFFF</color>
     <color name="background">#FFF3F3F3</color>
     <color name="content">#FF777777</color>
-    <color name="button_send">#FF33b5e5</color>
+    <color name="blue">#FF33b5e5</color>
+    <color name="transparent_blue">#4433b5e5</color>
 </resources>

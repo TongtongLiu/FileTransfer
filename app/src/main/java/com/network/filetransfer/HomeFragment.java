@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 
 import com.baoyz.widget.PullRefreshLayout;
 
@@ -27,7 +26,7 @@ public class HomeFragment extends ListFragment {
     static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_time,
                                        R.id.text_transfer_name, R.id.image_transfer_icon};
     private List<Map<String, Object>> transferList;
-    private SimpleAdapter adapter;
+    private MySimpleAdapter adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
+        adapter = new MySimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
     @Override

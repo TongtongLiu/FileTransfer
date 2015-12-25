@@ -11,10 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -39,8 +37,10 @@ public class FriendsFragment extends ListFragment {
     static final String[] from = new String[] {"name", "addr", "icon", "type"};
     static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon, R.id.text_friends_type};
     private static List<Map<String, Object>> friendList;
-    private SimpleAdapter adapter;
-    private int oldPosition = -1;
+    private MySimpleAdapter adapter;
+
+    public String type;
+    public String addr;
 
     private int REQUEST_DISCOVERALBLE_BT = 1;
 
@@ -55,7 +55,7 @@ public class FriendsFragment extends ListFragment {
         if (friendList == null) {
             friendList = new ArrayList<>();
         }
-        adapter = new SimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
+        adapter = new MySimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
     }
 
     @Override
@@ -72,29 +72,26 @@ public class FriendsFragment extends ListFragment {
     }
 
     public void onListItemClick(ListView parent, View view, int position, long id) {
-        String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
-        String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
+        Button send_button = (Button) getActivity().findViewById(R.id.button_send);
+        type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
+        addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
-        if (getActivity().findViewById(R.id.button_send) == null) {
+        if (send_button == null) {
             Intent intent = new Intent(getActivity(), FoldersActivity.class);
             intent.putExtra("type", type);
             intent.putExtra("addr", addr);
             startActivity(intent);
         }
         else {
-            ImageView imageView;
-            if (oldPosition >= 0) {
-                View itemView = parent.getChildAt(oldPosition);
-                imageView = (ImageView) itemView.findViewById(R.id.image_friends_selected);
-                imageView.setVisibility(View.INVISIBLE);
-            }
-            if (oldPosition != position) {
-                imageView = (ImageView) view.findViewById(R.id.image_friends_selected);
-                imageView.setVisibility(View.VISIBLE);
-                oldPosition = position;
+            boolean isSelected = adapter.setSelectedItem(position);
+            adapter.notifyDataSetInvalidated();
+            if (isSelected) {
+                send_button.setEnabled(true);
             }
             else {
-                oldPosition = -1;
+                send_button.setEnabled(false);
+                type = "";
+                addr = "";
             }
         }
     }

@@ -11,6 +11,8 @@ import java.util.HashMap;
 public class FoldersActivity extends Activity {
     private String type;
     private String addr;
+    private String file;
+    private FoldersFragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +21,14 @@ public class FoldersActivity extends Activity {
 
         Button backButton = (Button) findViewById(R.id.button_back);
         Button sendButton = (Button) findViewById(R.id.button_send);
+        sendButton.setEnabled(false);
         type = getIntent().getStringExtra("type");
         addr = getIntent().getStringExtra("addr");
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());
+
+        fragment = new FoldersFragment();
+        getFragmentManager().beginTransaction().replace(R.id.folders_fragment, fragment).commit();
     }
 
     class BackClickListener implements View.OnClickListener {
@@ -33,7 +39,8 @@ public class FoldersActivity extends Activity {
 
     class SendClickListener implements View.OnClickListener {
         public void onClick(View v) {
-
+            file = fragment.file;
+            // TODO send type addr file
         }
     }
 }

@@ -33,20 +33,21 @@
 
     </RelativeLayout>
 
-    <fragment
+    <LinearLayout
         android:id="@+id/folders_fragment"
-        android:name="com.network.filetransfer.FoldersFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:orientation="vertical"
+        android:layout_weight="1" >
+    </LinearLayout>
 
     <Button
         android:id="@+id/button_send"
         android:layout_width="match_parent"
         android:layout_height="@dimen/button_send_height"
         android:text="@string/button_send"
-        android:textColor="@color/foreground"
+        android:textColor="@drawable/send_button_textcolor"
         android:textSize="25sp"
-        android:background="@color/button_send" />
+        android:background="@drawable/send_button" />
 
 </LinearLayout>

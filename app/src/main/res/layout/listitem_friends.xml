@@ -54,7 +54,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/image_friends_selected"
+        android:id="@+id/image_selected"
         android:layout_width="@dimen/listview_image_size"
         android:layout_height="@dimen/listview_image_size"
         android:layout_gravity="center"
