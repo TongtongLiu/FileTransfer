@@ -86,11 +86,11 @@ public class FoldersFragment extends ListFragment {
         List<FolderInfo> infoList = new ArrayList<>();
 
         Log.v(TAG, "data");
-        infoList.add(new FolderInfo("全部文件", R.mipmap.ic_pc));
-        infoList.add(new FolderInfo("图片", R.mipmap.ic_phone));
-        infoList.add(new FolderInfo("音乐", R.mipmap.ic_phone));
-        infoList.add(new FolderInfo("视频", R.mipmap.ic_phone));
-        infoList.add(new FolderInfo("应用", R.mipmap.ic_phone));
+        infoList.add(new FolderInfo("全部文件", R.mipmap.ic_folder));
+        infoList.add(new FolderInfo("图片", R.mipmap.ic_folder));
+        infoList.add(new FolderInfo("音乐", R.mipmap.ic_folder));
+        infoList.add(new FolderInfo("视频", R.mipmap.ic_folder));
+        infoList.add(new FolderInfo("应用", R.mipmap.ic_folder));
 
         for (int i = 0; i < infoList.size(); i++) {
             map = new HashMap<>();
@@ -116,7 +116,7 @@ public class FoldersFragment extends ListFragment {
                         options.inJustDecodeBounds = true;
                         BitmapFactory.decodeFile(files[i].getPath(), options);
                         if (options.outWidth != -1) {
-                            infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_phone));
+                            infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_file));
                         }
                         break;
                     }
@@ -135,14 +135,19 @@ public class FoldersFragment extends ListFragment {
         Log.v(TAG, "data");
 
         if (!mDir.equals("/sdcard")) {
-            infoList.add(new AllFilesInfo("Back to ../", f.getParent(), R.mipmap.ic_phone));
+            infoList.add(new AllFilesInfo("Back to ../", f.getParent(), R.mipmap.ic_folder));
         }
         else {
-            infoList.add(new AllFilesInfo("Back to ../", "", R.mipmap.ic_phone));
+            infoList.add(new AllFilesInfo("Back to ../", "", R.mipmap.ic_folder));
         }
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
-                infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_phone));
+                if (files[i].isDirectory()) {
+                    infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_folder));
+                }
+                else {
+                    infoList.add(new AllFilesInfo(files[i].getName(), files[i].getPath(), R.mipmap.ic_file));
+                }
             }
         }
 

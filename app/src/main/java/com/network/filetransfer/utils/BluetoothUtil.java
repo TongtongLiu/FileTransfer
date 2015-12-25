@@ -141,8 +141,7 @@ public class BluetoothUtil {
                 // If a connection was accepted
                 if (socket != null) {
                     // Do work to manage the connection (in a separate thread)
-                    File file = new File;
-                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket, file);
+                    BluetoothReceiveFile bluetoothReceiveFile = new BluetoothReceiveFile(socket);
                     bluetoothReceiveFile.start();
                     try {
                         mmServerSocket.close();
@@ -290,7 +289,7 @@ public class BluetoothUtil {
         private final OutputStream mmOutStream;
         private File file;
 
-        public BluetoothReceiveFile(BluetoothSocket socket, File file) {
+        public BluetoothReceiveFile(BluetoothSocket socket) {
             mmSocket = socket;
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
