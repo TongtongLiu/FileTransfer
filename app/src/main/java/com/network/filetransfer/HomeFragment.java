@@ -26,9 +26,8 @@ import java.util.Map;
 public class HomeFragment extends ListFragment {
     private static final String TAG = "HomeFragments";
 
-    static final String[] from = new String[] {"origin", "time", "name", "icon"};
-    static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_time,
-                                       R.id.text_transfer_name, R.id.image_transfer_icon};
+    static final String[] from = new String[] {"origin", "name", "icon"};
+    static final int[] to = new int[] {R.id.text_transfer_origin, R.id.text_transfer_name, R.id.image_transfer_icon};
     private List<Map<String, Object>> transferList;
     private SimpleAdapter adapter;
 
@@ -38,7 +37,6 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        getTransferList(transferList);
         adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
@@ -98,32 +96,32 @@ public class HomeFragment extends ListFragment {
         }
     }
 
-//    public void onListItemClick(ListView parent, View view, int postion, long id) {
-//        Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
-//    }
+    //public void onListItemClick(ListView parent, View view, int postion, long id) {
+    //    Toast.makeText(getActivity(), "You are selecting " + postion, Toast.LENGTH_SHORT).show();
+    //}
 
     private boolean anyTransfer() {
-        return (transferList.size() > 0);
+        return transferList.size() > 0;
     }
 
-    private void getTransferList(List<Map<String, Object>> list) {
-        Map<String, Object> map;
-        List<TransferInfo> infoList = new ArrayList<>();
-
-        Log.v(TAG, "getTransferList");
-        infoList.add(new TransferInfo("test.png", "ME-MiPhone", new Date(), R.mipmap.ic_png, "WiFi"));
-        infoList.add(new TransferInfo("test.doc", "Nexus CLY", new Date(), R.mipmap.ic_other, "Bluetooth"));
-
-        for (int i = 0; i < infoList.size(); i++) {
-            map = new HashMap<>();
-            TransferInfo info = infoList.get(i);
-            map.put("name", info.getName());
-            map.put("origin", info.getOrigin());
-            map.put("time", info.getTime());
-            map.put("icon", info.getIcon());
-            list.add(map);
-        }
-    }
+    //private void getTransferList(List<Map<String, Object>> list) {
+    //    Map<String, Object> map;
+    //    List<TransferInfo> infoList = new ArrayList<>();
+    //
+    //    Log.v(TAG, "getTransferList");
+    //    infoList.add(new TransferInfo("test.png", "ME-MiPhone", new Date(), R.mipmap.ic_png));
+    //    infoList.add(new TransferInfo("test.doc", "Nexus CLY", new Date(), R.mipmap.ic_other));
+    //
+    //    for (int i = 0; i < infoList.size(); i++) {
+    //        map = new HashMap<>();
+    //        TransferInfo info = infoList.get(i);
+    //        map.put("name", info.getName());
+    //        map.put("origin", info.getOrigin());
+    //        map.put("time", info.getTime());
+    //        map.put("icon", info.getIcon());
+    //        list.add(map);
+    //    }
+    //}
 
     public void addTransfer(JSONObject json) {
         Log.v(TAG, "addTransfer");
@@ -131,10 +129,24 @@ public class HomeFragment extends ListFragment {
         TransferInfo info = new TransferInfo(json);
         map.put("name", info.getName());
         map.put("origin", info.getOrigin());
-        map.put("time", info.getTime());
+        map.put("size", info.getSize());
+        map.put("transferedSize", info.getTransferedSize());
         map.put("icon", info.getIcon());
-        if (!transferList.contains(map)) {
-            Log.v(TAG, "A New User");
+        Map<String, Object> cmpmap;
+        boolean isExist = false;
+        for (int i = 0; i < transferList.size(); i++) {
+            cmpmap = transferList.get(i);
+            if (cmpmap.get("name").equals(map.get("name")) &&
+                    cmpmap.get("origin").equals(map.get("origin")) &&
+                    cmpmap.get("size").equals(map.get("size"))) {
+                Log.v(TAG, "An Existed Transfer");
+                cmpmap.put("transferedSize", map.get("transferedSize"));
+                isExist = true;
+                break;
+            }
+        }
+        if (!isExist) {
+            Log.v(TAG, "A New Transfer");
             transferList.add(map);
         }
         adapter.notifyDataSetChanged();
@@ -145,51 +157,34 @@ public class HomeFragment extends ListFragment {
 class TransferInfo {
     private String name;
     private String origin;
-    private Date time;
+    private long time;
     private int icon;
-    private String type;
+    private long size;
+    private long transferedSize;
 
-    public TransferInfo(String name, String origin, Date time, int icon, String type) {
+    public static final long ONE_MINUTE = 60 * 1000;
+    public static final long ONE_HOUR = 60 * ONE_MINUTE;
+    public static final long ONE_DAY = 24 * ONE_HOUR;
+    public static final long ONE_MONTH = 30 * ONE_DAY;
+    public static final long ONE_YEAR = 12 * ONE_MONTH;
+
+    public TransferInfo(String name, String origin, int icon, long size, long transferedSize) {
         setName(name);
         setOrigin(origin);
-        setTime(time);
+        setTime(System.currentTimeMillis());
         setIcon(icon);
-        setType(type);
+        setSize(size);
+        setTransferedSize(transferedSize);
     }
 
     public TransferInfo(JSONObject json) {
         try {
             if (json.has("name")) { setName(json.getString("name")); }
             if (json.has("origin")) { setOrigin(json.getString("origin")); }
-            if (json.has("time")) { setOrigin(json.getString("time")); }
-            if (json.has("type")) {
-                setType(json.getString("type"));
-            }
-            else {
-                setType("Bluetooth");
-            }
-            if (json.has("icon")) {
-                String iconStr = json.getString("icon");
-                if (type.equals("WiFi")) {
-                    if (iconStr.equals("Phone")) {
-                        setIcon(R.mipmap.ic_phone_wifi);
-                    }
-                    else {
-                        setIcon(R.mipmap.ic_pc_wifi);
-                    }
-                }
-                else {
-                    if (iconStr.equals("Phone")) {
-                        setIcon(R.mipmap.ic_phone_bluetooth);
-                    }
-                    else {
-                        setIcon(R.mipmap.ic_pc_bluetooth);
-                    }
-                }
-            }
-            else {
-                setIcon(R.mipmap.ic_bluetooth);
-            }
+            if (json.has("size")) { setSize(json.getLong("size")); }
+            if (json.has("transferedSize")) { setSize(json.getLong("transferedSize")); }
+            time = System.currentTimeMillis();
+            icon = R.mipmap.ic_other;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,12 +196,40 @@ class TransferInfo {
     public void setOrigin(String origin) { this.origin = origin; }
     public String getOrigin() { return origin; }
 
-    public void setTime(Date time) { this.time = time; }
-    public String getTime() { return "Now"; }
+    public void setTime(long time) { this.time = time; }
+    public String getTime() {
+        long currentTime = System.currentTimeMillis();
+        long timePassed = currentTime - time;
+        long timeIntoFormat;
+        String timeString;
+
+        if (timePassed < ONE_MINUTE) {
+            timeString = "Now";
+        } else if (timePassed < ONE_HOUR) {
+            timeIntoFormat = timePassed / ONE_MINUTE;
+            timeString = timeIntoFormat + "分钟前";
+        } else if (timePassed < ONE_DAY) {
+            timeIntoFormat = timePassed / ONE_HOUR;
+            timeString = timeIntoFormat + "小时前";
+        } else if (timePassed < ONE_MONTH) {
+            timeIntoFormat = timePassed / ONE_DAY;
+            timeString = timeIntoFormat + "天前";
+        } else if (timePassed < ONE_YEAR) {
+            timeIntoFormat = timePassed / ONE_MONTH;
+            timeString = timeIntoFormat + "个月前";
+        } else {
+            timeIntoFormat = timePassed / ONE_YEAR;
+            timeString = timeIntoFormat + "年前";
+        }
+        return timeString;
+    }
 
     public void setIcon(int icon) { this.icon = icon; }
     public int getIcon() { return icon; }
 
-    public void setType(String type) { this.type = type; }
-    public String getType() { return type; }
+    public void setSize(long size) { this.size = size; }
+    public long getSize() { return size; }
+
+    public void setTransferedSize(long transferedSize) { this.transferedSize = transferedSize; }
+    public long getTransferedSize() { return transferedSize; }
 }

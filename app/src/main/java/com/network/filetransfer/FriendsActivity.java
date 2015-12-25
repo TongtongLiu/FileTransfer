@@ -2,12 +2,18 @@ package com.network.filetransfer;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.network.filetransfer.utils.TransferClient;
+
 public class FriendsActivity extends Activity {
+    private static final String TAG = "FriendsActivity";
+
     private String type;
     private String addr;
+    private String name;
     private String file;
     private FriendsFragment fragment;
 
@@ -44,7 +50,20 @@ public class FriendsActivity extends Activity {
         public void onClick(View v) {
             type = fragment.type;
             addr = fragment.addr;
-            // TODO send type addr file
+            name = fragment.name;
+            if (type.equals("WiFi")) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.v(TAG, "TransferClient Start");
+                        TransferClient client = new TransferClient(addr, name, file, MainActivity.mainHandler);
+                        client.run();
+                    }
+                }).start();
+            }
+            else {
+
+            }
         }
     }
 }

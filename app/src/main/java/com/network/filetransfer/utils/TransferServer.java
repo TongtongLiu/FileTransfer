@@ -9,8 +9,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class TransferServer {
-    static final int PORT = 7774;
-    public static ArrayList<Socket> socketList = new ArrayList<>();
+    static final int PORT = 7775;
+
+    //public static ArrayList<Socket> socketList = new ArrayList<>();
     private Context context;
     private Handler handler;
 
@@ -24,8 +25,8 @@ public class TransferServer {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (true) {
                 Socket socket = serverSocket.accept();
-                socketList.add(socket);
-                new Thread(new TransferServerThread(socket)).start();
+                //socketList.add(socket);
+                new Thread(new TransferServerThread(socket, handler)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

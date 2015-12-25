@@ -6,7 +6,6 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,13 +15,13 @@ public class MainHandler extends Handler {
     public final static int broadcast = 0x1;
     public final static int bluetooth_search = 0x2;
     public final static int bluetooth_sendfile = 0x3;
+    public final static int transfer_send = 0x5;
+    public final static int transfer_receive = 0x6;
 
-    private final WeakReference<MainActivity> mActivity;
     private List<FriendsFragment> friendsFragmentList;
     private HomeFragment homeFragment;
 
-    public MainHandler(MainActivity activity) {
-        mActivity = new WeakReference<>(activity);
+    public MainHandler() {
         friendsFragmentList = new ArrayList<>();
     }
 
@@ -51,9 +50,16 @@ public class MainHandler extends Handler {
                     friendsFragment.addFriend((JSONObject) message.obj);
                 }
                 break;
+
             case bluetooth_sendfile:
                 homeFragment.addTransfer((JSONObject) message.obj);
                 break;
+
+            case transfer_send:
+            case transfer_receive:
+                homeFragment.addTransfer((JSONObject) message.obj);
+                break;
+
             default:
                 break;
         }

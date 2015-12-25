@@ -37,10 +37,11 @@ public class FriendsFragment extends ListFragment {
     static final String[] from = new String[] {"name", "addr", "icon", "type"};
     static final int[] to = new int[] {R.id.text_friends_name, R.id.text_friends_addr, R.id.image_friends_icon, R.id.text_friends_type};
     private static List<Map<String, Object>> friendList;
-    private MySimpleAdapter adapter;
+    private ChoiceSimpleAdapter adapter;
 
     public String type;
     public String addr;
+    public String name;
 
     private int REQUEST_DISCOVERALBLE_BT = 1;
 
@@ -55,7 +56,7 @@ public class FriendsFragment extends ListFragment {
         if (friendList == null) {
             friendList = new ArrayList<>();
         }
-        adapter = new MySimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
+        adapter = new ChoiceSimpleAdapter(this.getActivity(), friendList, R.layout.listitem_friends, from, to);
     }
 
     @Override
@@ -75,11 +76,13 @@ public class FriendsFragment extends ListFragment {
         Button send_button = (Button) getActivity().findViewById(R.id.button_send);
         type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
+        name = ((TextView) view.findViewById(R.id.text_friends_name)).getText().toString();
 
         if (send_button == null) {
             Intent intent = new Intent(getActivity(), FoldersActivity.class);
             intent.putExtra("type", type);
             intent.putExtra("addr", addr);
+            intent.putExtra("name", name);
             startActivity(intent);
         }
         else {

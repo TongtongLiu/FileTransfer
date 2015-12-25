@@ -24,7 +24,7 @@ public class FoldersFragment extends ListFragment {
     final String[] from = new String[] {"name", "path", "icon"};
     final int[] to = new int[] {R.id.text_folders_name, R.id.text_folders_path, R.id.image_folders_icon};
     List<Map<String, Object>> fileList;
-    MySimpleAdapter adapter;
+    ChoiceSimpleAdapter adapter;
 
     public String file;
 
@@ -39,7 +39,7 @@ public class FoldersFragment extends ListFragment {
         fileList = new ArrayList<>();
         String mDir = Uri.fromFile(new File("/sdcard")).getPath();
         getFoldersList(mDir, fileList);
-        adapter = new MySimpleAdapter(this.getActivity(), fileList, R.layout.listitem_folders, from, to);
+        adapter = new ChoiceSimpleAdapter(this.getActivity(), fileList, R.layout.listitem_folders, from, to);
         this.setListAdapter(adapter);
 
         return view;

@@ -9,11 +9,11 @@ import android.widget.SimpleAdapter;
 import java.util.List;
 import java.util.Map;
 
-public class MySimpleAdapter extends SimpleAdapter {
+public class ChoiceSimpleAdapter extends SimpleAdapter {
     private int selectItem = -1;
 
-    public MySimpleAdapter(Context context, List<? extends Map<String, ?>> data,
-                           int resource, String[] from, int[] to) {
+    public ChoiceSimpleAdapter(Context context, List<? extends Map<String, ?>> data,
+                               int resource, String[] from, int[] to) {
         super(context, data, resource, from, to);
     }
 

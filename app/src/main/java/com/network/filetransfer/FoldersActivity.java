@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class FoldersActivity extends Activity {
     private String type;
     private String addr;
+    private String name;
     private String file;
     private FoldersFragment fragment;
 
@@ -25,6 +26,8 @@ public class FoldersActivity extends Activity {
         sendButton.setEnabled(false);
         type = getIntent().getStringExtra("type");
         addr = getIntent().getStringExtra("addr");
+        name = getIntent().getStringExtra("name");
+
         backButton.setOnClickListener(new BackClickListener());
         sendButton.setOnClickListener(new SendClickListener());
 

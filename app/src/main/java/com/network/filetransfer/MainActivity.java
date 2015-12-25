@@ -1,6 +1,5 @@
 package com.network.filetransfer;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -10,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
@@ -26,8 +24,6 @@ import android.widget.Toast;
 import com.network.filetransfer.utils.BluetoothUtil;
 import com.network.filetransfer.utils.BroadcastServer;
 import com.network.filetransfer.utils.TransferServer;
-
-import org.json.JSONObject;
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
@@ -152,7 +148,7 @@ public class MainActivity extends Activity {
     }
 
     private void initServers() {
-        mainHandler = new MainHandler(this);
+        mainHandler = new MainHandler();
         mainHandler.addFriendsFragment((FriendsFragment) fragmentPagerAdapter.getItem(2));
         mainHandler.addHomeFragment((HomeFragment) fragmentPagerAdapter.getItem(0));
         Log.v(TAG, "BroadcastServer Start");
