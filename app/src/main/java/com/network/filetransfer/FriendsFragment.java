@@ -3,6 +3,7 @@ package com.network.filetransfer;
 import android.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.network.filetransfer.utils.NetworkUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +69,7 @@ public class FriendsFragment extends ListFragment {
         String type = ((TextView) view.findViewById(R.id.text_friends_type)).getText().toString();
         String addr = ((TextView) view.findViewById(R.id.text_friends_addr)).getText().toString();
 
-        if (getActivity().findViewById(R.id.button_send) == null) {
+        /*if (getActivity().findViewById(R.id.button_send) == null) {
             Intent intent = new Intent(getActivity(), FoldersActivity.class);
             intent.putExtra("type", type);
             intent.putExtra("addr", addr);
@@ -75,6 +77,19 @@ public class FriendsFragment extends ListFragment {
         }
         else {
             parent.setSelection(position);
+        }*/
+
+        if (type == "Bluetooth") {
+            Uri uri = Uri.fromFile(new File("/sdcard"));
+            String mDir = uri.getPath() + "/DCIM/Camera";
+            File[] files = new File(mDir).listFiles();
+            int i;
+            for (i = 0; i < files.length; i++) {
+                if (files[i].isFile()) {
+                    break;
+                }
+            }
+            bluetoothUtil.sendFile(addr, files[i]);
         }
     }
 

@@ -60,7 +60,8 @@ public class BluetoothUtil {
         this.handler = handler;
         adapter = BluetoothAdapter.getDefaultAdapter();
         manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
-        mmUUID = UUID.randomUUID();
+        String uuid = "4bbd4690-ab36-4ed2-9a8e-40723b1790c3";
+        mmUUID = UUID.fromString(uuid);
     }
 
     public boolean isBluetoothEnabled() {
@@ -177,7 +178,6 @@ public class BluetoothUtil {
             // Get a BluetoothSocket to connect with the given BluetoothDevice
             try {
                 // MY_UUID is the app's UUID string, also used by the server code
-                UUID MY_UUID =  UUID.randomUUID();
                 tmp = device.createRfcommSocketToServiceRecord(mmUUID);
             } catch (IOException e) { }
             mmSocket = tmp;
