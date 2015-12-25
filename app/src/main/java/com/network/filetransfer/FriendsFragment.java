@@ -76,20 +76,6 @@ public class FriendsFragment extends ListFragment {
         else {
             parent.setSelection(position);
         }
-
-        //Toast.makeText(getActivity(), "You are selecting " + position, Toast.LENGTH_SHORT).show();
-        //ListView listView = (ListView)parent;
-        //HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(position);
-        //// TODO: if bluetooth friend, pair each other first.
-        //if (map.containsKey("type")) {
-        //    String type = map.get("type").toString();
-        //    if (type == "Bluetooth") {
-        //        String MAC_addr = map.get("addr").toString();
-        //        bluetoothUtil.connectToServer(MAC_addr);
-        //        //Toast.makeText(getActivity(), "haha", Toast.LENGTH_SHORT).show();
-        //    }
-        //}
-        // TODO: if the bluetooth friend has been paired, redirect to FoldFragment.
     }
 
     @Override

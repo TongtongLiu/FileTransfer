@@ -33,7 +33,7 @@ public class HomeFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         transferList = new ArrayList<>();
-        adapter = new SimpleAdapter(this.getActivity(), getTransferList(), R.layout.listitem_home, from, to);
+        adapter = new SimpleAdapter(this.getActivity(), transferList, R.layout.listitem_home, from, to);
     }
 
     @Override
@@ -95,7 +95,7 @@ public class HomeFragment extends ListFragment {
 //    }
 
     private boolean anyTransfer() {
-        return true;
+        return false;
     }
 
     private List<Map<String, Object>> getTransferList() {
