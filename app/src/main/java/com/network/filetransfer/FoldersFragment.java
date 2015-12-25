@@ -1,6 +1,7 @@
 package com.network.filetransfer;
 
 import android.app.ListFragment;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -24,15 +27,21 @@ import java.util.Objects;
 public class FoldersFragment extends ListFragment {
     private static final String TAG = "FolderFragments";
 
+    private int oldPosition = -1;
+    
     final String[] from = new String[] {"name", "path", "icon"};
     final int[] to = new int[] {R.id.text_folders_name, R.id.text_folders_path, R.id.image_folders_icon};
     List<Map<String, Object>> fileList;
     SimpleAdapter adapter;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_folders, container, false);
 
+        ListView listView = (ListView) view.findViewById(android.R.id.list);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
+        
         fileList = new ArrayList<>();
         String mDir = Uri.fromFile(new File("/sdcard")).getPath();
         getFoldersList(mDir, fileList);
@@ -42,16 +51,37 @@ public class FoldersFragment extends ListFragment {
         return view;
     }
 
-    public void onListItemClick(ListView parent, View view, int postion, long id) {
+    public void onListItemClick(ListView parent, View view, int position, long id) {
         ListView listView = (ListView)parent;
-        HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(postion);
+        HashMap<String, Object> map = (HashMap<String, Object>)listView.getItemAtPosition(position);
         String mDir = map.get("path").toString();
         File f = new File(mDir);
         if (f.isDirectory()) {
             getFoldersList(f.getPath(), fileList);
             adapter.notifyDataSetChanged();
         } else {
-            // send file
+            // ========================================================================
+            if (getActivity().findViewById(R.id.button_send) == null) {
+                Intent intent = new Intent(getActivity(), FriendsActivity.class);
+                intent.putExtra("file", mDir);
+                startActivity(intent);
+            }
+            else {
+                ImageView imageView;
+                if (oldPosition >= 0) {
+                    View itemView = parent.getChildAt(oldPosition);
+                    imageView = (ImageView) itemView.findViewById(R.id.image_folders_selected);
+                    imageView.setVisibility(View.INVISIBLE);
+                }
+                if (oldPosition != position) {
+                    imageView = (ImageView) view.findViewById(R.id.image_folders_selected);
+                    imageView.setVisibility(View.VISIBLE);
+                    oldPosition = position;
+                } else {
+                    oldPosition = -1;
+                }
+            }
+            // ========================================================================
         }
     }
 
